@@ -1,14 +1,23 @@
 package main
 
-import "fmt"
-
-var version = "dev"
+import (
+	"fmt"
+	"io"
+	"os/exec"
+)
 
 func main() {
-	fmt.Printf("Version: %s\n", version)
-	fmt.Println(Hello())
-}
 
-func Hello() string {
-	return "Hello Golang"
+	grepCmd := exec.Command("grep", "goodbye")
+
+	grepIn, _ := grepCmd.StdinPipe()
+	grepOut, _ := grepCmd.StdoutPipe()
+	grepCmd.Start()
+	grepIn.Write([]byte("hello grep\ngoodbye grep"))
+	grepIn.Close()
+	grepBytes, _ := io.ReadAll(grepOut)
+	grepCmd.Wait()
+
+	fmt.Println("> grep hello")
+	fmt.Println(string(grepBytes))
 }
