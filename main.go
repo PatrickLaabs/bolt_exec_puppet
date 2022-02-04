@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	grepCmd := exec.Command("grep", "goodbye")
+	grepCmd := exec.Command("grep", "hello")
 
 	grepIn, _ := grepCmd.StdinPipe()
 	grepOut, _ := grepCmd.StdoutPipe()
