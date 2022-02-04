@@ -7,3 +7,5 @@ ToDo:
 - exec.cmd for grep
 - grep for exit codes 0 & 2 (maybe better switch for every exit code and print them to stdout),
 - return exit code output from stdout
+
+puppet apply --noop --test --debug manifest/manifest.pp
