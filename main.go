@@ -1,24 +1,23 @@
 package main
 
 import (
-	"os"
+	"fmt"
+	"io"
 	"os/exec"
-	"syscall"
 )
 
 func main() {
 
-	binary, lookErr := exec.LookPath("ls")
-	if lookErr != nil {
-		panic(lookErr)
-	}
+	grepCmd := exec.Command("grep", "goodbye")
 
-	args := []string{"ls", "-a", "-l", "-h"}
+	grepIn, _ := grepCmd.StdinPipe()
+	grepOut, _ := grepCmd.StdoutPipe()
+	grepCmd.Start()
+	grepIn.Write([]byte("hello grep\ngoodbye grep"))
+	grepIn.Close()
+	grepBytes, _ := io.ReadAll(grepOut)
+	grepCmd.Wait()
 
-	env := os.Environ()
-
-	execErr := syscall.Exec(binary, args, env)
-	if execErr != nil {
-		panic(execErr)
-	}
+	fmt.Println("> grep hello")
+	fmt.Println(string(grepBytes))
 }
