@@ -8,28 +8,25 @@ import (
 
 func main() {
 
-	puppetCmd := exec.Command("puppet", "apply", "--noop", "--test", "--debug", "manifest/manifest.pp")
+	// This line is needed for testing purposes, to run puppet with noop on manifest.pp
+	// puppetCmd := exec.Command("puppet", "apply", "--noop", "--test", "--debug", "manifest/manifest.pp")
 
+	puppetCmd := exec.Command("puppet", "apply", "--noop", "--test", "--debug")
+
+	// Input & Output Pipes
 	puppetIn, _ := puppetCmd.StdinPipe()
 	puppetOut, _ := puppetCmd.StdoutPipe()
+
+	// Start the process
 	puppetCmd.Start()
 	puppetIn.Close()
+
+	// Read the resulting output
 	puppetBytes, _ := io.ReadAll(puppetOut)
+
+	// Wait for process to exit
 	puppetCmd.Wait()
 
 	fmt.Println("> grep puppet stuff")
 	fmt.Println(string(puppetBytes))
-
-	// grepCmd := exec.Command("grep", "hello")
-
-	// grepIn, _ := grepCmd.StdinPipe()
-	// grepOut, _ := grepCmd.StdoutPipe()
-	// grepCmd.Start()
-	// grepIn.Write([]byte("hello grep\ngoodbye grep"))
-	// grepIn.Close()
-	// grepBytes, _ := io.ReadAll(grepOut)
-	// grepCmd.Wait()
-
-	// fmt.Println("> grep hello")
-	// fmt.Println(string(grepBytes))
 }
