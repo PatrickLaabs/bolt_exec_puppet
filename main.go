@@ -9,9 +9,9 @@ import (
 func main() {
 
 	// This line is needed for testing purposes, to run puppet with noop on manifest.pp
-	puppetCmd := exec.Command("/bin/sh", "-c",  "puppet apply --noop --test --debug manifest/manifest.pp | grep -E 'exit'")
+	// puppetCmd := exec.Command("/bin/sh", "-c",  "puppet apply --noop --test --debug manifest/manifest.pp | grep -E 'exit'")
 
-	// puppetCmd := exec.Command("/bin/sh", "-c",  "puppet apply --noop --test --debug | grep -E 'exit'")
+	puppetCmd := exec.Command("/bin/sh", "-c",  "puppet apply --noop --test --debug | grep -E 'exit'")
 
 	// puppetCmd := exec.Command("/bin/sh", "-c", "ls | grep -E Docker; echo 'Hello'")
 
