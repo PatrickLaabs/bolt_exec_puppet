@@ -9,3 +9,5 @@ ToDo:
 - return exit code output from stdout
 
 puppet apply --noop --test --debug manifest/manifest.pp | grep exit
+
+puppet apply --noop --test --debug manifest/manifest.pp | grep -E "status code 1"
