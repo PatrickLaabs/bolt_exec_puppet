@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io"
+	// "io"
 	"os/exec"
+	"log"
 )
 
 func main() {
@@ -19,20 +20,27 @@ func main() {
 
 	// puppetCmd := exec.Command("/bin/sh", "-c", "ls | grep -E Docker; echo 'Hello'")
 
+	stdoutStderr, err := puppetCmd.CombinedOutput()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%s\n", stdoutStderr)
+
+
 	// Input & Output Pipes
-	puppetIn, _ := puppetCmd.StdinPipe()
-	puppetOut, _ := puppetCmd.StdoutPipe()
+	// puppetIn, _ := puppetCmd.StdinPipe()
+	// puppetOut, _ := puppetCmd.StdoutPipe()
 
 	// Start the process
-	puppetCmd.Start()
-	puppetIn.Close()
+	// puppetCmd.Start()
+	// puppetIn.Close()
 
 	// Read the resulting output
-	puppetBytes, _ := io.ReadAll(puppetOut)
+	// puppetBytes, _ := io.ReadAll(puppetOut)
 
 	// Wait for process to exit
-	puppetCmd.Wait()
+	// puppetCmd.Wait()
 
 	// Printing the resulting output
-	fmt.Println(string(puppetBytes))
+	// fmt.Println(string(puppetBytes))
 }
