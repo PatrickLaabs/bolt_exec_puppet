@@ -9,6 +9,7 @@ ToDo:
 - return exit code output from stdout
 - err handling (if puppet run is not executed)
 - integrate fmt.print for start
+- stderrpipe muss ausgegeben werden
 
 puppet apply --noop --test --debug manifest/manifest.pp | grep exit
 
