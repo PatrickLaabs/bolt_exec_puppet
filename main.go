@@ -27,6 +27,10 @@ func main() {
 	// Wait for process to exit
 	puppetCmd.Wait()
 
+	
 	fmt.Println("> grep puppet stuff")
+
+	// Printing the resulting output
 	fmt.Println(string(puppetBytes))
+
 }
