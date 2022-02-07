@@ -8,7 +8,8 @@ import (
 )
 
 func main() {
-	cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
+	cmd := exec.Command("puppet", "agent", "--test", "--noop")
+	//cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
 	// cmd := exec.Command("/bin/sh", "-c", "ls | grep fdfd")
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
@@ -29,3 +30,7 @@ func main() {
 
 	fmt.Println(string(Bytes))
 }
+
+// func exportPath() {
+// 	// Code for setting up path for puppet binary
+// }
