@@ -13,7 +13,7 @@ func main() {
 
 	// puppetCmd := exec.Command("/bin/sh", "-c", "sudo /usr/local/bin/puppet agent --test --noop")
 
-	puppetCmd := exec.Command("sudo", "/usr/local/bin/puppet agent --test --noop")
+	puppetCmd := exec.Command("sudo", "/usr/local/bin/puppet", "agent", "--test", "--noop")
 
 	// puppetCmd := exec.Command("/bin/sh", "-c", "sudo /usr/local/bin/puppet agent --test --noop | grep -E 'exit'") <= detailed exit codes from puppet
 
