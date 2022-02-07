@@ -2,45 +2,30 @@ package main
 
 import (
 	"fmt"
-	// "io"
-	"os/exec"
 	"log"
+	"os/exec"
+	"io"
 )
 
 func main() {
-
-	// This line is needed for testing purposes, to run puppet with noop on manifest.pp
-	// puppetCmd := exec.Command("/bin/sh", "-c",  "puppet apply --noop --test --debug manifest/manifest.pp | grep -E 'exit'")
-
-	// puppetCmd := exec.Command("/bin/sh", "-c", "sudo /usr/local/bin/puppet agent --test --noop")
-
-	puppetCmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
-
-	// puppetCmd := exec.Command("/bin/sh", "-c", "sudo /usr/local/bin/puppet agent --test --noop | grep -E 'exit'") <= detailed exit codes from puppet
-
-	// puppetCmd := exec.Command("/bin/sh", "-c", "ls | grep -E Docker; echo 'Hello'")
-
-	stdoutStderr, err := puppetCmd.CombinedOutput()
+	// cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
+	cmd := exec.Command("/bin/sh", "-c", "ls | grep Docker")
+	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("%s\n", stdoutStderr)
+	if err := cmd.Start(); err != nil {
+		log.Fatal(err)
+	}
+	if err := cmd.Close(); err != nil {
+		log.Fatal(err)
+	}
 
+	Bytes, _ := io.ReadAll(stdout)
 
-	// Input & Output Pipes
-	// puppetIn, _ := puppetCmd.StdinPipe()
-	// puppetOut, _ := puppetCmd.StdoutPipe()
+	if err := cmd.Wait(); err != nil {
+		log.Fatal(err)
+	}
 
-	// Start the process
-	// puppetCmd.Start()
-	// puppetIn.Close()
-
-	// Read the resulting output
-	// puppetBytes, _ := io.ReadAll(puppetOut)
-
-	// Wait for process to exit
-	// puppetCmd.Wait()
-
-	// Printing the resulting output
-	// fmt.Println(string(puppetBytes))
+	fmt.Printf(Bytes)
 }
