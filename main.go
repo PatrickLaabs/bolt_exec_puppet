@@ -9,9 +9,9 @@ import (
 func main() {
 
 	// This line is needed for testing purposes, to run puppet with noop on manifest.pp
-	// puppetCmd := exec.Command("puppet", "apply", "--noop", "--test", "--debug", "manifest/manifest.pp")
+	puppetCmd := exec.Command("puppet", "apply", "--noop", "--test", "--debug", "manifest/manifest.pp", "|", "grep", "exit")
 
-	puppetCmd := exec.Command("puppet", "apply", "--noop", "--test", "--debug")
+	// puppetCmd := exec.Command("puppet", "apply", "--noop", "--test", "--debug")
 
 	// Input & Output Pipes
 	puppetIn, _ := puppetCmd.StdinPipe()
@@ -27,10 +27,6 @@ func main() {
 	// Wait for process to exit
 	puppetCmd.Wait()
 
-	
-	fmt.Println("> grep puppet stuff")
-
 	// Printing the resulting output
 	fmt.Println(string(puppetBytes))
-
 }
