@@ -19,3 +19,14 @@ puppet apply --noop --test --debug manifest/manifest.pp | grep -E "status code 1
 Exit Codes
 0 & 2 als 0 zurückgeben (success)
 1 & 4 & 6 als 1 zurückgeben (err)
+
+--
+
+exp switch statement:
+
+switch i {
+    case 0: fmt.Println("zero")
+    case 1: fmt.Println("one")
+    case 2: fmt.Println("two")
+    default: fmt.Println("Unknown Number")
+}
