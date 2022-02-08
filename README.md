@@ -3,13 +3,12 @@
 
 ToDo:
 
-- exec.Command for exeuting puppet
-- exec.cmd for grep
-- grep for exit codes 0 & 2 (maybe better switch for every exit code and print them to stdout),
-- return exit code output from stdout
-- err handling (if puppet run is not executed)
-- integrate fmt.print for start
-- stderrpipe muss ausgegeben werden
+[x] exec.Command for exeuting puppet
+[ ] exec.cmd for grep
+[x] return exit code output from stdout
+[x] integrate fmt.print for start
+[ ] stderrpipe muss ausgegeben werden
+[ ] save exit code into var e, and return it. Use switch statement for advanced handling
 
 puppet apply --noop --test --debug manifest/manifest.pp | grep exit
 
