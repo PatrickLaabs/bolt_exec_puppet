@@ -5,13 +5,12 @@ import (
 	"io"
 	"log"
 	"os/exec"
+	"syscall"
 )
 
 func main() {
-	//cmd := exec.Command("puppet", "agent", "--test", "--noop")
 	//cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
-
-	cmd := exec.Command("/bin/sh", "-c", "ls | grep sdsd")
+	cmd := exec.Command("/bin/sh", "-c", "ls | grep fgfg")
 	fmt.Println(">> executing binary...")
 
 	// stdout, err := cmd.StdoutPipe()
@@ -25,7 +24,7 @@ func main() {
 	Stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		fmt.Println("> stdoutpipe err")
-		log.Fatal(err)
+		log.Fatalf("cmd.Start: %v", err)
 	}
 	if err := cmd.Start(); err != nil {
 		fmt.Println("> start err")
@@ -44,8 +43,15 @@ func main() {
 	Bytes, _ := io.ReadAll(Stdout)
 
 	if err := cmd.Wait(); err != nil {
-		fmt.Println("> wait err")
-		log.Fatal(err)
+		// fmt.Println("> wait err")
+		// log.Fatal(err)
+		if exiterr, ok := err.(*exec.ExitError); ok {
+			if status, ok := exiterr.Sys().(syscall.WaitStatus); ok {
+				log.Printf("Exit Status: %d", status.ExitStatus())
+			}
+		} else {
+			log.Fatalf("cmd.Wait: %v", err)
+		}
 	}
 
 	fmt.Println(string(Bytes))
@@ -63,6 +69,4 @@ func main() {
 
 // 	// CASE / Switch func?
 
-// 	fmt.Println("foo:", os.Getenv("PWD"))
-// 	fmt.Println("foo:", os.Getenv("$?"))
 // }
