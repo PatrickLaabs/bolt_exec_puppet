@@ -3,9 +3,30 @@
 
 ToDo:
 
-- exec.Command for exeuting puppet
-- exec.cmd for grep
-- grep for exit codes 0 & 2 (maybe better switch for every exit code and print them to stdout),
-- return exit code output from stdout
+[x] exec.Command for exeuting puppet
+[ ] exec.cmd for grep
+[x] return exit code output from stdout
+[x] integrate fmt.print for start
+[ ] stderrpipe muss ausgegeben werden
+[ ] save exit code into var e, and return it. Use switch statement for advanced handling
 
-puppet apply --noop --test --debug manifest/manifest.pp
+puppet apply --noop --test --debug manifest/manifest.pp | grep exit
+
+puppet apply --noop --test --debug manifest/manifest.pp | grep -E "status code 1"
+
+
+-- 
+Exit Codes
+0 & 2 als 0 zurückgeben (success)
+1 & 4 & 6 als 1 zurückgeben (err)
+
+--
+
+exp switch statement:
+
+switch i {
+    case 0: fmt.Println("zero")
+    case 1: fmt.Println("one")
+    case 2: fmt.Println("two")
+    default: fmt.Println("Unknown Number")
+}
