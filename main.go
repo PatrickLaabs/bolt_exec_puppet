@@ -5,12 +5,11 @@ import (
 	"io"
 	"log"
 	"os/exec"
-	"syscall"
 )
 
 func main() {
 	//cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
-	cmd := exec.Command("/bin/sh", "-c", "ls | grep fgfg")
+	cmd := exec.Command("/bin/sh", "-c", "ls | grep main")
 	fmt.Println(">> executing binary...")
 
 	// stdout, err := cmd.StdoutPipe()
@@ -43,16 +42,36 @@ func main() {
 	Bytes, _ := io.ReadAll(Stdout)
 
 	if err := cmd.Wait(); err != nil {
-		// fmt.Println("> wait err")
-		// log.Fatal(err)
-		if exiterr, ok := err.(*exec.ExitError); ok {
-			if status, ok := exiterr.Sys().(syscall.WaitStatus); ok {
-				log.Printf("Exit Status: %d", status.ExitStatus())
-			}
-		} else {
-			log.Fatalf("cmd.Wait: %v", err)
-		}
+		fmt.Println("> wait err")
+		fmt.Println("NEw Line: ", err)
+		log.Fatal("\nfatal wait err: ", err)
+	} else {
+		fmt.Println("printing wait err - else", err)
 	}
+
+	errOut := err
+	fmt.Println("printing err out of 'scope'", errOut)
+
+	switch errOut {
+	case 1:
+		fmt.Println("exitCode 1")
+	default:
+		fmt.Print("succeeded", err)
+	}
+
+	// if err != nil {
+	// 	i :=
+	// 	switch i {
+	// 	case 0:
+	// 		fmt.Println("zero")
+	// 	case 1:
+	// 		fmt.Println("one")
+	// 	case 2:
+	// 		fmt.Println("two")
+	// 	default:
+	// 		fmt.Println("Unknown Number")
+	// 	}
+	// }
 
 	fmt.Println(string(Bytes))
 	fmt.Println(">> executing binary succeeded")
