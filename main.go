@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
@@ -12,15 +13,22 @@ func printCommand(cmd *exec.Cmd) {
 	fmt.Printf("==> Executing: %s\n", strings.Join(cmd.Args, " "))
 }
 
-// func printOut(cmd *exec.Cmd) {
-// 	fmt.Printf("==> Executing: %s\n", strings.Join(cmd.Args, " "))
-// 	// os.Stdout.WriteString(fmt.Sprintf("==> Stdout: %s\n", cmd))
-// 	os.Stdout.WriteString(fmt.Sprintf("sdsd: %s\n", cmd))
-// 	var stdout bytes.Buffer
-// 	cmd.Stdout = &stdout
-// 	outStr := stdout.String()
-// 	fmt.Printf("out: %s\n", outStr)
-// }
+func bar(cmd *exec.Cmd) {
+	// Create an *exec.Cmd
+	// cmd := exec.Command("go", "version")
+
+	// Stdout buffer
+	cmdOutput := &bytes.Buffer{}
+	// Attach buffer to command
+	cmd.Stdout = cmdOutput
+
+	// Execute command
+	// printCommand(cmd)
+	err := cmd.Run() // will wait for command to return
+	printError(err)
+	// Only output the commands stdout
+	printOutput(cmdOutput.Bytes()) // => go version go1.3 darwin/amd64
+}
 
 func printError(err error) {
 	if err != nil {
@@ -64,9 +72,10 @@ func fooOutput(outs []byte) {
 
 func main() {
 	cmd := exec.Command("go", "version")
-	// fmt.Printf("==> executing: %s\n", strings.Join(cmd.Args, " "))
 	printCommand(cmd)
-	// printOut(cmd)
+
+	bar(cmd)
+
 	var waitStatus syscall.WaitStatus
 	if err := cmd.Run(); err != nil {
 		printError(err)
