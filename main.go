@@ -12,6 +12,16 @@ func printCommand(cmd *exec.Cmd) {
 	fmt.Printf("==> Executing: %s\n", strings.Join(cmd.Args, " "))
 }
 
+// func printOut(cmd *exec.Cmd) {
+// 	fmt.Printf("==> Executing: %s\n", strings.Join(cmd.Args, " "))
+// 	// os.Stdout.WriteString(fmt.Sprintf("==> Stdout: %s\n", cmd))
+// 	os.Stdout.WriteString(fmt.Sprintf("sdsd: %s\n", cmd))
+// 	var stdout bytes.Buffer
+// 	cmd.Stdout = &stdout
+// 	outStr := stdout.String()
+// 	fmt.Printf("out: %s\n", outStr)
+// }
+
 func printError(err error) {
 	if err != nil {
 		os.Stderr.WriteString(fmt.Sprintf("==> Error: %s\n", err.Error()))
@@ -54,14 +64,9 @@ func fooOutput(outs []byte) {
 
 func main() {
 	cmd := exec.Command("go", "version")
-	fmt.Printf("==> exec: %s\n", strings.Join(cmd.Args, " "))
-
-	// cmdStdOut, err := cmd.CombinedOutput()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// fmt.Printf("%s\n", cmdStdOut)
-
+	// fmt.Printf("==> executing: %s\n", strings.Join(cmd.Args, " "))
+	printCommand(cmd)
+	// printOut(cmd)
 	var waitStatus syscall.WaitStatus
 	if err := cmd.Run(); err != nil {
 		printError(err)
