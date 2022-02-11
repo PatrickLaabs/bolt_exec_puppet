@@ -62,14 +62,20 @@ func fooOutput(outs []byte) {
 func main() {
 	// cmd := exec.Command("go", "version")
 	cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
+
+	// Maybe use a combinedOutput
 	cmdOutput := &bytes.Buffer{}
+	cmdStderr:= &bytes.Buffer{}
 	cmd.Stdout = cmdOutput
+	cmd.Stderr = cmdStderr
+
 	printCommand(cmd)
 	var waitStatus syscall.WaitStatus
 	if err := cmd.Run(); err != nil {
 		printError(err)
 		//printOutput(cmdOutput.Bytes())
 		if exitError, ok := err.(*exec.ExitError); ok {
+			fmt.Println(">>stderr: ", cmd.Stderr)
 			waitStatus = exitError.Sys().(syscall.WaitStatus)
 			printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 			fooOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
