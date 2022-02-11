@@ -1,21 +1,16 @@
-# golang binary for bolt run_command
+# Execute commands
 
+Golang project to execute commands inside the golang code/binary and handle
+the err, exit codes and returning the exit code from the executed command back to 
+the shell.
 
-ToDo:
+In this way, we can handle the exit code returned by the command.
 
-[x] exec.Command for exeuting puppet
-[ ] exec.cmd for grep
-[x] return exit code output from stdout
-[x] integrate fmt.print for start
-[ ] stderrpipe muss ausgegeben werden
-[ ] save exit code into var e, and return it. Use switch statement for advanced handling
+The exit code is handled inside the go code with a switch statement.
 
-puppet apply --noop --test --debug manifest/manifest.pp | grep exit
+----
 
-puppet apply --noop --test --debug manifest/manifest.pp | grep -E "status code 1"
+### ToDos:
 
-
---
-Exit Codes
-0 & 2 als 0 zurückgeben (success)
-1 & 4 & 6 als 1 zurückgeben (err)
+* [ ] Maybe use a combinedOutput instead of Stdout and Stderr. 
+* [ ] Running tests for checking correct exitCode handling.
