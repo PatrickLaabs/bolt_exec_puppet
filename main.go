@@ -9,7 +9,44 @@ import (
 	"syscall"
 )
 
+func main() {
+	// Command Execute
+
+	cmd := exec.Command("go", "blurb")
+	// cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
+
+	// Maybe use a combinedOutput
+	// Attaching to Stdout and Stderr
+	cmdOutput := &bytes.Buffer{}
+	cmdStderr := &bytes.Buffer{}
+	cmd.Stdout = cmdOutput
+	cmd.Stderr = cmdStderr
+
+	// Printing func printCommand
+	printCommand(cmd)
+
+	var waitStatus syscall.WaitStatus
+	// Starting the command saved inside cmd
+	if err := cmd.Run(); err != nil {
+		printError(err)
+		if exitError, ok := err.(*exec.ExitError); ok {
+			fmt.Println("Stderr ==> ", cmd.Stderr)
+			fmt.Println("Stdout ==> ", cmd.Stdout)
+			waitStatus = exitError.Sys().(syscall.WaitStatus)
+			printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
+			exitHandle([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
+		}
+	} else {
+		waitStatus = cmd.ProcessState.Sys().(syscall.WaitStatus)
+		fmt.Println("Stderr ==> ", cmd.Stderr)
+		fmt.Println("Stdout ==> ", cmd.Stdout)
+		printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
+		exitHandle([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
+	}
+}
+
 func printCommand(cmd *exec.Cmd) {
+	// Printing executed command. Just for knowing that the run has started.
 	fmt.Printf("==> Executing: %s\n", strings.Join(cmd.Args, " "))
 }
 
@@ -25,16 +62,9 @@ func printOutput(outs []byte) {
 	}
 }
 
-// func CmdOutputPrint(outs []byte) {
-// 	if len(outs) > 0 {
-// 		fmt.Printf("==> Output: %s\n", string(outs))
-// 	}
-// }
-
-func fooOutput(outs []byte) {
-	// ToDo:
-	// 	Return 0 and 2 as successful (0)
-	//	Return 1, 4 & 6 as error (1)
+func exitHandle(outs []byte) {
+	// Handling the returned exit codes from exec.Command inside a switch statement
+	// and returns the desired exit code via os.Exit with defer.
 	code := 0
 	defer func() {
 		os.Exit(code)
@@ -56,34 +86,5 @@ func fooOutput(outs []byte) {
 	default:
 		fmt.Printf("==> switch case default - exit code 0: %s\n", string(outs))
 		code = 0
-	}
-}
-
-func main() {
-	// cmd := exec.Command("go", "version")
-	cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
-
-	// Maybe use a combinedOutput
-	cmdOutput := &bytes.Buffer{}
-	cmdStderr:= &bytes.Buffer{}
-	cmd.Stdout = cmdOutput
-	cmd.Stderr = cmdStderr
-
-	printCommand(cmd)
-	var waitStatus syscall.WaitStatus
-	if err := cmd.Run(); err != nil {
-		printError(err)
-		//printOutput(cmdOutput.Bytes())
-		if exitError, ok := err.(*exec.ExitError); ok {
-			fmt.Println(">>stderr: ", cmd.Stderr)
-			waitStatus = exitError.Sys().(syscall.WaitStatus)
-			printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
-			fooOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
-		}
-	} else {
-		waitStatus = cmd.ProcessState.Sys().(syscall.WaitStatus)
-		fmt.Println(">> ", cmd.Stdout)
-		printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
-		fooOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 	}
 }

@@ -37,6 +37,7 @@ func main() {
 	printCommand(cmd)
 	err := cmd.Run() // will wait for command to return
 	printError(err)
+
 	// Only output the commands stdout
 	printOutput(cmdOutput.Bytes()) // => go version go1.3 darwin/amd64
 }
