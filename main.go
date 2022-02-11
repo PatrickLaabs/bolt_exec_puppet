@@ -60,7 +60,8 @@ func fooOutput(outs []byte) {
 }
 
 func main() {
-	cmd := exec.Command("go", "version")
+	// cmd := exec.Command("go", "version")
+	cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
 	cmdOutput := &bytes.Buffer{}
 	cmd.Stdout = cmdOutput
 	printCommand(cmd)
