@@ -13,23 +13,6 @@ func printCommand(cmd *exec.Cmd) {
 	fmt.Printf("==> Executing: %s\n", strings.Join(cmd.Args, " "))
 }
 
-func bar(cmd *exec.Cmd) {
-	// Create an *exec.Cmd
-	// cmd := exec.Command("go", "version")
-
-	// Stdout buffer
-	cmdOutput := &bytes.Buffer{}
-	// Attach buffer to command
-	cmd.Stdout = cmdOutput
-
-	// Execute command
-	// printCommand(cmd)
-	err := cmd.Run() // will wait for command to return
-	printError(err)
-	// Only output the commands stdout
-	printOutput(cmdOutput.Bytes()) // => go version go1.3 darwin/amd64
-}
-
 func printError(err error) {
 	if err != nil {
 		os.Stderr.WriteString(fmt.Sprintf("==> Error: %s\n", err.Error()))
@@ -41,6 +24,12 @@ func printOutput(outs []byte) {
 		fmt.Printf("==> Output: %s\n", string(outs))
 	}
 }
+
+// func CmdOutputPrint(outs []byte) {
+// 	if len(outs) > 0 {
+// 		fmt.Printf("==> Output: %s\n", string(outs))
+// 	}
+// }
 
 func fooOutput(outs []byte) {
 	// ToDo:
@@ -72,13 +61,13 @@ func fooOutput(outs []byte) {
 
 func main() {
 	cmd := exec.Command("go", "version")
+	cmdOutput := &bytes.Buffer{}
+	cmd.Stdout = cmdOutput
 	printCommand(cmd)
-
-	bar(cmd)
-
 	var waitStatus syscall.WaitStatus
 	if err := cmd.Run(); err != nil {
 		printError(err)
+		//printOutput(cmdOutput.Bytes())
 		if exitError, ok := err.(*exec.ExitError); ok {
 			waitStatus = exitError.Sys().(syscall.WaitStatus)
 			printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
@@ -86,6 +75,7 @@ func main() {
 		}
 	} else {
 		waitStatus = cmd.ProcessState.Sys().(syscall.WaitStatus)
+		fmt.Println(">> ", cmd.Stdout)
 		printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 		fooOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 	}
