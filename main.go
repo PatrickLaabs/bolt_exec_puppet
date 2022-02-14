@@ -12,13 +12,14 @@ import (
 func main() {
 	// Command Execute
 
-	cmd := exec.Command("go", "blurb")
+	cmd := exec.Command("go", "version")
 	// cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
 
 	// Maybe use a combinedOutput
 	// Attaching to Stdout and Stderr
 	cmdOutput := &bytes.Buffer{}
 	cmdStderr := &bytes.Buffer{}
+	// output, _ := cmd.CombinedOutput()
 	cmd.Stdout = cmdOutput
 	cmd.Stderr = cmdStderr
 
@@ -30,6 +31,7 @@ func main() {
 	if err := cmd.Run(); err != nil {
 		printError(err)
 		if exitError, ok := err.(*exec.ExitError); ok {
+			// fmt.Println("combined: ", output)
 			fmt.Println("Stderr ==> ", cmd.Stderr)
 			fmt.Println("Stdout ==> ", cmd.Stdout)
 			waitStatus = exitError.Sys().(syscall.WaitStatus)
@@ -38,6 +40,7 @@ func main() {
 		}
 	} else {
 		waitStatus = cmd.ProcessState.Sys().(syscall.WaitStatus)
+		// fmt.Println("combined: ", output)
 		fmt.Println("Stderr ==> ", cmd.Stderr)
 		fmt.Println("Stdout ==> ", cmd.Stdout)
 		printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
@@ -70,6 +73,9 @@ func exitHandle(outs []byte) {
 		os.Exit(code)
 	}()
 
+	// Printing depends on case.
+	// Currently it prints the used case and the expected exit code along with it.
+	// This is only for debuging and tests - can be removed afterwards.
 	switch n := string(outs); n {
 	case "1":
 		fmt.Printf("==> switch case 1 - exit code 1: %s\n", string(outs))
