@@ -3,15 +3,20 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"strings"
 	"syscall"
 )
 
+type Cmd struct {
+	Stdout io.Writer
+	Stderr io.Writer
+}
+
 func main() {
 	// Command Execute
-
 	cmd := exec.Command("go", "version")
 	// cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
 
@@ -19,7 +24,6 @@ func main() {
 	// Attaching to Stdout and Stderr
 	cmdOutput := &bytes.Buffer{}
 	cmdStderr := &bytes.Buffer{}
-	// output, _ := cmd.CombinedOutput()
 	cmd.Stdout = cmdOutput
 	cmd.Stderr = cmdStderr
 
@@ -31,7 +35,6 @@ func main() {
 	if err := cmd.Run(); err != nil {
 		printError(err)
 		if exitError, ok := err.(*exec.ExitError); ok {
-			// fmt.Println("combined: ", output)
 			fmt.Println("Stderr ==> ", cmd.Stderr)
 			fmt.Println("Stdout ==> ", cmd.Stdout)
 			waitStatus = exitError.Sys().(syscall.WaitStatus)
@@ -40,7 +43,6 @@ func main() {
 		}
 	} else {
 		waitStatus = cmd.ProcessState.Sys().(syscall.WaitStatus)
-		// fmt.Println("combined: ", output)
 		fmt.Println("Stderr ==> ", cmd.Stderr)
 		fmt.Println("Stdout ==> ", cmd.Stdout)
 		printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
