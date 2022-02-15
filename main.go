@@ -11,7 +11,7 @@ import (
 
 func main() {
 	// Command Execute
-	cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
+	cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test")
 
 	// Maybe use a combinedOutput
 	// Attaching to Stdout and Stderr
