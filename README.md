@@ -17,6 +17,6 @@ The exit code is handled inside the go code with a switch statement.
 * [x] Only one binary for running puppet statement
   > running binary without --args runs puppet noop statement, 
   > set --args (--no-noop) to run operational puppet run.
-* [ ] integrate flags inside main func 
+* [x] integrate flags inside main func 
 * [ ] name convention of program: bolt_puppet_exec
-* [ ] if statements for handling command refs
+* [ ] ~~if statements for handling command refs~~

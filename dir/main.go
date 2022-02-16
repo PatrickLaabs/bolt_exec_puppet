@@ -15,7 +15,7 @@ func main() {
 		os.Exit(code)
 	}()
 
-	e := "6"
+	e := "2"
 	switch n := e; n {
 	case "1":
 		fmt.Printf("==> switch case 1 - exit code 1: %s\n", string(n))

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"flag"
 	"fmt"
@@ -11,25 +12,30 @@ import (
 )
 
 func main() {
+	var goFlagString string
+	flag.StringVar(&goFlagString, "go-version", "version", "using go version command")
+	var gitFlagString string
+	flag.StringVar(&gitFlagString, "git-version", "version", "using git version command")
+
+	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Printf("==> Choose your option, please: \n")
+	scanner.Scan()
+	var n string
+	switch string(scanner.Text()) {
+	case "go":
+		n = goFlagString
+		break
+	case "git":
+		n = gitFlagString
+		break
+	}
+
 	// Command Execute
+
 	// cmd := exec.Command("go", "version" + *tags)
 	// cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
-
-	// ***
-	tags := flag.String("tags", "", "Tags String")
-	skipTags := flag.String("skip_tags", "", "Skip_Tags String")
-	gitVersion := flag.String("v", "", "gitVersion String")
-
-	noNoop := flag.Bool("no-noop", false, "No No-Operational Run")
-
-	flag.Parse()
-
-	fmt.Println("tags:", *tags)
-	fmt.Println("skip_tags:", *skipTags)
-	fmt.Println("no-noop:", *noNoop)
-	fmt.Println("gitVersion:", *gitVersion)
-	// ***
-	cmd := exec.Command("go", "version"+*tags)
+	// cmd := exec.Command("bash", "-c", "go version")
+	cmd := exec.Command(string(scanner.Text()), string(n))
 
 	// Maybe use a combinedOutput
 	// Attaching to Stdout and Stderr
@@ -108,7 +114,6 @@ func exitHandle(outs []byte) {
 	}
 }
 
-func cmdArgsHandle() {
-	// Handles different args and prints them into a new var
-	// print this var to exec.Command
-}
+//func cmdArgsHandle() {
+//
+//}
