@@ -2,23 +2,34 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 	"strings"
 	"syscall"
 )
 
-type Cmd struct {
-	Stdout io.Writer
-	Stderr io.Writer
-}
-
 func main() {
 	// Command Execute
-	cmd := exec.Command("go", "version")
+	// cmd := exec.Command("go", "version" + *tags)
 	// cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
+
+	// ***
+	tags := flag.String("tags", "", "Tags String")
+	skipTags := flag.String("skip_tags", "", "Skip_Tags String")
+	gitVersion := flag.String("v", "", "gitVersion String")
+
+	noNoop := flag.Bool("no-noop", false, "No No-Operational Run")
+
+	flag.Parse()
+
+	fmt.Println("tags:", *tags)
+	fmt.Println("skip_tags:", *skipTags)
+	fmt.Println("no-noop:", *noNoop)
+	fmt.Println("gitVersion:", *gitVersion)
+	// ***
+	cmd := exec.Command("go", "version"+*tags)
 
 	// Maybe use a combinedOutput
 	// Attaching to Stdout and Stderr
@@ -95,4 +106,9 @@ func exitHandle(outs []byte) {
 		fmt.Printf("==> switch case default - exit code 0: %s\n", string(outs))
 		code = 0
 	}
+}
+
+func cmdArgsHandle() {
+	// Handles different args and prints them into a new var
+	// print this var to exec.Command
 }
