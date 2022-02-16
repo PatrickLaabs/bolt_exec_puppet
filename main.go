@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bufio"
+	// "bufio"
 	"bytes"
 	"flag"
 	"fmt"
@@ -12,30 +12,49 @@ import (
 )
 
 func main() {
-	var goFlagString string
-	flag.StringVar(&goFlagString, "go-version", "version", "using go version command")
-	var gitFlagString string
-	flag.StringVar(&gitFlagString, "git-version", "version", "using git version command")
-
-	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Printf("==> Choose your option, please: \n")
-	scanner.Scan()
-	var n string
-	switch string(scanner.Text()) {
-	case "go":
-		n = goFlagString
-		break
-	case "git":
-		n = gitFlagString
-		break
+	// var goFlagString string
+	// flag.StringVar(&goFlagString, "go-version", "version", "using go version command")
+	// var gitFlagString string
+	// flag.StringVar(&gitFlagString, "git-version", "version", "using git version command")
+	var tagsFlagString string
+	// tagsFlagString := ""
+	flag.StringVar(&tagsFlagString, "tags", "", "tags help menu")
+	fmt.Printf("stringVar content %T\n", tagsFlagString)
+	var a []string
+	if string(tagsFlagString) == " " {
+		fmt.Printf("stringVar content %v\n", tagsFlagString)
+		a = append(a, "version")
+		// a = append(a, tagsFlagString)
+	} else {
+		fmt.Println("help")
+		a = append(a, "help")
 	}
+
+	// scanner := bufio.NewScanner(os.Stdin)
+	// fmt.Printf("==> Choose your option, please: \n")
+	// scanner.Scan()
+	// var n string
+	// switch string(scanner.Text()) {
+	// case "go":
+	// 	n = goFlagString
+	// 	break
+	// case "git":
+	// 	n = gitFlagString
+	// 	break
+	// }
 
 	// Command Execute
 
-	// cmd := exec.Command("go", "version" + *tags)
 	// cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
 	// cmd := exec.Command("bash", "-c", "go version")
-	cmd := exec.Command(string(scanner.Text()), string(n))
+	// cmd := exec.Command(string(scanner.Text()), string(n))
+	// var a []string
+	// a = append(a, "version")
+	// a[0] = "go"
+	// a[0] = "version"
+	// fmt.Println("array print:", a[0], a[1])
+	// fmt.Println(a)
+	cmd := exec.Command("go", a...)
 
 	// Maybe use a combinedOutput
 	// Attaching to Stdout and Stderr
