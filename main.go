@@ -1,7 +1,6 @@
 package main
 
 import (
-	// "bufio"
 	"bytes"
 	"flag"
 	"fmt"
@@ -12,72 +11,65 @@ import (
 )
 
 func main() {
-	//var goFlagString string
-	//flag.StringVar(&goFlagString, "go-version", "version", "using go version command")
-	//var gitFlagString string
-	//flag.StringVar(&gitFlagString, "git-version", "version", "using git version command")
-
-	//var tagsFlagString string
-	//// tagsFlagString := ""
-	//flag.StringVar(&tagsFlagString, "tags", "", "tags help menu")
-	//fmt.Printf("stringVar content %T\n", tagsFlagString)
-	//var a []string
-	//if string(tagsFlagString) == " " {
-	//	fmt.Printf("stringVar content %v\n", tagsFlagString)
-	//	a = append(a, "version")
-	//	// a = append(a, tagsFlagString)
-	//} else {
-	//	fmt.Println("help")
-	//	a = append(a, "help")
-	//}
-
-	// scanner := bufio.NewScanner(os.Stdin)
-	// fmt.Printf("==> Choose your option, please: \n")
-	// scanner.Scan()
-	// var n string
-	// switch string(scanner.Text()) {
-	// case "go":
-	// 	n = goFlagString
-	// 	break
-	// case "git":
-	// 	n = gitFlagString
-	// 	break
-	// }
-
 	goCmd := flag.NewFlagSet("go", flag.ExitOnError)
-	goName := goCmd.String("version", "", "version")
-	gitCmd := flag.NewFlagSet("git", flag.ExitOnError)
-	gitName := gitCmd.String("version", "", "version")
+	goName := goCmd.String("version", "version", "version")
 
+	gitCmd := flag.NewFlagSet("git", flag.ExitOnError)
+	gitName := gitCmd.String("version", "blurb", "version")
+
+	helpCmd := flag.NewFlagSet("help", flag.ExitOnError)
+	helpName := helpCmd.String("help", "", "-h")
+
+	// == SETTING ARGS ==
+	// Args: --noop, --no-noop, --tags-como
+	// --no-noop => https://puppet.com/docs/puppet/7/config_about_settings.html
+	//noopCmd := flag.NewFlagSet("noop", flag.ExitOnError)
+	//noopName := noopCmd.String("noop", "--noop", "puppet agent --noop")
+	//
+	//opCmd := flag.NewFlagSet("op", flag.ExitOnError)
+	//opName := opCmd.String("op", "--no-noop", "puppet agent --no-noop")
+	//
+	//tagComoCmd := flag.NewFlagSet("tagcomo", flag.ExitOnError)
+	//tagComoName := tagComoCmd.String("tags-como", "--tags=siguv_como", "puppet agent --tags=siguv_como")
+
+	//if len(os.Args) < 2 {
+	//	fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop, op or tags-como")
+	//	os.Exit(1)
+	//}
 	if len(os.Args) < 2 {
-		fmt.Println("expected 'go' or 'git' subcommands")
+		fmt.Println(">> Usage:\n>> ./main go or git")
 		os.Exit(1)
 	}
+
+	var n string
 	switch os.Args[1] {
 	case "go":
 		goCmd.Parse(os.Args[2:])
-		fmt.Println("subcommand 'go'")
-		fmt.Println("goName:", *goName)
-		n = goName
+		//fmt.Println("subcommand 'go'")
+		//fmt.Println("goName:", *goName)
+		n = *goName
 	case "git":
 		gitCmd.Parse(os.Args[2:])
-		fmt.Println("subcommand 'git'")
-		fmt.Println("gitname:", *gitName)
-		n = gitName
+		//fmt.Println("subcommand 'git'")
+		// fmt.Println("gitname:", *gitName)
+		n = *gitName
+	case "help":
+		helpCmd.Parse(os.Args[2:])
+		fmt.Println(">> Usage:\n>> ./main go or git")
+		//fmt.Println("helpName:", *helpName)
+		n = *helpName
+		os.Exit(1)
 	}
-	fmt.Println("git and/or go name printing: ", n)
-	// Command Execute
+	// Command Executing
 
-	// cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
-	// cmd := exec.Command("bash", "-c", "go version")
-	// cmd := exec.Command(string(scanner.Text()), string(n))
-	// var a []string
-	// a = append(a, "version")
-	// a[0] = "go"
-	// a[0] = "version"
-	// fmt.Println("array print:", a[0], a[1])
-	// fmt.Println(a)
-	cmd := exec.Command("go", "help")
+	//p := "/usr/local/bin/puppet"
+	//pa := "agent"
+	//cmd := exec.Command(p, pa, n)
+	g := "git"
+	cmd := exec.Command(g, n)
+	//if runtime.GOOS == "windows" {
+	//	cmd = exec.Command("tasklist")
+	//}
 
 	// Maybe use a combinedOutput
 	// Attaching to Stdout and Stderr
