@@ -12,23 +12,24 @@ import (
 )
 
 func main() {
-	// var goFlagString string
-	// flag.StringVar(&goFlagString, "go-version", "version", "using go version command")
-	// var gitFlagString string
-	// flag.StringVar(&gitFlagString, "git-version", "version", "using git version command")
-	var tagsFlagString string
-	// tagsFlagString := ""
-	flag.StringVar(&tagsFlagString, "tags", "", "tags help menu")
-	fmt.Printf("stringVar content %T\n", tagsFlagString)
-	var a []string
-	if string(tagsFlagString) == " " {
-		fmt.Printf("stringVar content %v\n", tagsFlagString)
-		a = append(a, "version")
-		// a = append(a, tagsFlagString)
-	} else {
-		fmt.Println("help")
-		a = append(a, "help")
-	}
+	//var goFlagString string
+	//flag.StringVar(&goFlagString, "go-version", "version", "using go version command")
+	//var gitFlagString string
+	//flag.StringVar(&gitFlagString, "git-version", "version", "using git version command")
+
+	//var tagsFlagString string
+	//// tagsFlagString := ""
+	//flag.StringVar(&tagsFlagString, "tags", "", "tags help menu")
+	//fmt.Printf("stringVar content %T\n", tagsFlagString)
+	//var a []string
+	//if string(tagsFlagString) == " " {
+	//	fmt.Printf("stringVar content %v\n", tagsFlagString)
+	//	a = append(a, "version")
+	//	// a = append(a, tagsFlagString)
+	//} else {
+	//	fmt.Println("help")
+	//	a = append(a, "help")
+	//}
 
 	// scanner := bufio.NewScanner(os.Stdin)
 	// fmt.Printf("==> Choose your option, please: \n")
@@ -43,6 +44,28 @@ func main() {
 	// 	break
 	// }
 
+	goCmd := flag.NewFlagSet("go", flag.ExitOnError)
+	goName := goCmd.String("version", "", "version")
+	gitCmd := flag.NewFlagSet("git", flag.ExitOnError)
+	gitName := gitCmd.String("version", "", "version")
+
+	if len(os.Args) < 2 {
+		fmt.Println("expected 'go' or 'git' subcommands")
+		os.Exit(1)
+	}
+	switch os.Args[1] {
+	case "go":
+		goCmd.Parse(os.Args[2:])
+		fmt.Println("subcommand 'go'")
+		fmt.Println("goName:", *goName)
+		n = goName
+	case "git":
+		gitCmd.Parse(os.Args[2:])
+		fmt.Println("subcommand 'git'")
+		fmt.Println("gitname:", *gitName)
+		n = gitName
+	}
+	fmt.Println("git and/or go name printing: ", n)
 	// Command Execute
 
 	// cmd := exec.Command("/usr/local/bin/puppet", "agent", "--test", "--noop")
@@ -54,7 +77,7 @@ func main() {
 	// a[0] = "version"
 	// fmt.Println("array print:", a[0], a[1])
 	// fmt.Println(a)
-	cmd := exec.Command("go", a...)
+	cmd := exec.Command("go", "help")
 
 	// Maybe use a combinedOutput
 	// Attaching to Stdout and Stderr
