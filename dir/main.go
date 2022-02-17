@@ -5,7 +5,6 @@ import (
 	"os"
 )
 
-// ToDo:
 // 	Return 0 and 2 as successful (0)
 //	Return 1, 4 & 6 as error (1)
 
@@ -15,7 +14,7 @@ func main() {
 		os.Exit(code)
 	}()
 
-	e := "6"
+	e := "2"
 	switch n := e; n {
 	case "1":
 		fmt.Printf("==> switch case 1 - exit code 1: %s\n", string(n))

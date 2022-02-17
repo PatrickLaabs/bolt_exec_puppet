@@ -11,17 +11,27 @@ import (
 )
 
 func main() {
+	goCmd := flag.NewFlagSet("go", flag.ExitOnError)
+	goName := goCmd.String("version", "version", "version")
 
-	noopCmd := flag.NewFlagSet("noop", flag.ExitOnError)
-	noopName := noopCmd.String("noop", "--noop", "puppet agent --noop")
-	noopEnable := noopCmd.Bool("enable", false, "enable")
-
-	opCmd := flag.NewFlagSet("op", flag.ExitOnError)
-	opName := opCmd.String("op", "--no-noop", "puppet agent --no-noop")
-	opEnable := opCmd.Bool("enable", false, "enable")
+	gitCmd := flag.NewFlagSet("git", flag.ExitOnError)
+	gitName := gitCmd.String("version", "blurb", "version")
 
 	helpCmd := flag.NewFlagSet("help", flag.ExitOnError)
 	helpName := helpCmd.String("help", "", "-h")
+
+	buildCmd := flag.NewFlagSet("build", flag.ExitOnError)
+	buildName := buildCmd.String("build", "build", "build")
+	// buildN := buildCmd.String("main.go", "main.go", "main.go")
+
+	// == SETTING ARGS ==
+	// Args: --noop, --no-noop, --tags-como
+	// --no-noop => https://puppet.com/docs/puppet/7/config_about_settings.html
+	//noopCmd := flag.NewFlagSet("noop", flag.ExitOnError)
+	//noopName := noopCmd.String("noop", "--noop", "puppet agent --noop")
+	//
+	//opCmd := flag.NewFlagSet("op", flag.ExitOnError)
+	//opName := opCmd.String("op", "--no-noop", "puppet agent --no-noop")
 	//
 	// == ToDo:
 	// == Value von tag Flag muss mit --tags=xxx befüllt werden. Also: tags-como=--tags=siguv_como
@@ -29,48 +39,70 @@ func main() {
 	//tagComoCmd := flag.NewFlagSet("tagcomo", flag.ExitOnError)
 	//tagComoName := tagComoCmd.String("tags-como", "--tags=siguv_como", "puppet agent --tags=siguv_como")
 
+	//if len(os.Args) < 2 {
+	//	fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop, op or tags-como")
+	//	os.Exit(1)
+	//}
 	if len(os.Args) < 2 {
-		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
+		fmt.Println(">> Usage:\n>> ./main go or git")
 		os.Exit(1)
 	}
 
 	var n string
+	var t string
+	// var t string
 	flag.Parse()
+	// args := flag.Args()
 	switch os.Args[1] {
-	case "noop":
-		noopCmd.Parse(os.Args[2:])
-		fmt.Println(" > enable noop:", *noopEnable)
-		if *noopEnable == false {
-			fmt.Println("exiting noop case")
-			os.Exit(1)
-		}
-		n = *noopName
-	case "op":
-		opCmd.Parse(os.Args[2:])
-		fmt.Println(" > enable op:", *opEnable)
-		if *opEnable == false {
-			fmt.Println("exiting op case")
-			os.Exit(1)
-		}
-		n = *opName
+	case "go":
+		goCmd.Parse(os.Args[2:])
+		fmt.Println("  tail:", goCmd.Args())
+		fmt.Println("  > tail:", flag.Args())
+		//fmt.Println("subcommand 'go'")
+		//tail := goCmd.Args()
+		//tailConv := strings.Join(tail, " ")
+		n = *goName
+		//t = tailConv
+	case "git":
+		gitCmd.Parse(os.Args[2:])
+		fmt.Println("  tail:", gitCmd.Args())
+		fmt.Println("  > tail:", flag.Args())
+		//fmt.Println("subcommand 'git'")
+		// fmt.Println("gitname:", *gitName)
+		//tail := gitCmd.Args()
+		//tailConv := strings.Join(tail, " ")
+		n = *gitName
+		// t = tailConv
+	case "build":
+		buildCmd.Parse(os.Args[2:])
+		fmt.Println("  tail:", buildCmd.Args())
+		fmt.Println("  > tail:", flag.Args())
+		// var tail []string = buildCmd.Args()
+		//tail := buildCmd.Args()
+		//tailConv := strings.Join(tail, " ")
+		n = *buildName
+		tail := flag.Args()
+		tailConv := strings.Join(tail, " ")
+		t = tailConv
+		// t = tailConv
 	case "help":
 		helpCmd.Parse(os.Args[2:])
-		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
+		fmt.Println(">> Usage:\n>> ./main go or git")
+		//fmt.Println("helpName:", *helpName)
 		n = *helpName
 		os.Exit(1)
 	}
 
-	// == Command Executing ==
-	// p := "/usr/local/bin/puppet"
-	p := "/opt/puppetlabs/puppet/bin/puppet"
-	pw := "puppet"
-	pa := "agent"
-	t := "--test"
-	cmd := exec.Command(p, pa, t, n)
-	if runtime.GOOS == "windows" {
-  	fmt.Println("Running on Windows:")
-		cmd = exec.Command(pw, pa, t, n)
-	}
+	// Command Executing
+
+	//p := "/usr/local/bin/puppet"
+	//pa := "agent"
+	//cmd := exec.Command(p, pa, n)
+	// g := "go"
+	cmd := exec.Command("go", n, t)
+	//if runtime.GOOS == "windows" {
+	//	cmd = exec.Command("tasklist")
+	//}
 
 	// Maybe use a combinedOutput
 	// Attaching to Stdout and Stderr

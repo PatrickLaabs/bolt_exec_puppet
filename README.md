@@ -13,4 +13,10 @@ The exit code is handled inside the go code with a switch statement.
 ### ToDos:
 
 * [ ] Maybe use a combinedOutput instead of Stdout and Stderr. 
-* [ ] Running tests for checking correct exitCode handling.
+* [x] Running tests for checking correct exitCode handling.
+* [x] Only one binary for running puppet statement
+  > running binary without --args runs puppet noop statement, 
+  > set --args (--no-noop) to run operational puppet run.
+* [x] integrate flags inside main func 
+* [ ] name convention of program: bolt_puppet_exec
+* [ ] ~~if statements for handling command refs~~
