@@ -6,70 +6,73 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
 	"strings"
 	"syscall"
 )
 
 func main() {
-	goCmd := flag.NewFlagSet("go", flag.ExitOnError)
-	goName := goCmd.String("version", "version", "version")
+	//== SETTING ARGS ==
+	//Args: --noop, --no-noop, --tags-como
+	//--no-noop => https://puppet.com/docs/puppet/7/config_about_settings.html
+	noopCmd := flag.NewFlagSet("noop", flag.ExitOnError)
+	noopName := noopCmd.String("noop", "--noop", "puppet agent --noop")
+	noopEnable := noopCmd.Bool("enable", false, "enable")
 
-	gitCmd := flag.NewFlagSet("git", flag.ExitOnError)
-	gitName := gitCmd.String("version", "blurb", "version")
+	opCmd := flag.NewFlagSet("op", flag.ExitOnError)
+	opName := opCmd.String("op", "--no-noop", "puppet agent --no-noop")
+	opEnable := opCmd.Bool("enable", false, "enable")
 
 	helpCmd := flag.NewFlagSet("help", flag.ExitOnError)
 	helpName := helpCmd.String("help", "", "-h")
-
-	// == SETTING ARGS ==
-	// Args: --noop, --no-noop, --tags-como
-	// --no-noop => https://puppet.com/docs/puppet/7/config_about_settings.html
-	//noopCmd := flag.NewFlagSet("noop", flag.ExitOnError)
-	//noopName := noopCmd.String("noop", "--noop", "puppet agent --noop")
 	//
-	//opCmd := flag.NewFlagSet("op", flag.ExitOnError)
-	//opName := opCmd.String("op", "--no-noop", "puppet agent --no-noop")
-	//
+	// == ToDo:
+	// == Value von tag Flag muss mit --tags=xxx befüllt werden. Also: tags-como=--tags=siguv_como
+	// == Besser Lösung wird gesucht!
 	//tagComoCmd := flag.NewFlagSet("tagcomo", flag.ExitOnError)
 	//tagComoName := tagComoCmd.String("tags-como", "--tags=siguv_como", "puppet agent --tags=siguv_como")
 
-	//if len(os.Args) < 2 {
-	//	fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop, op or tags-como")
-	//	os.Exit(1)
-	//}
 	if len(os.Args) < 2 {
-		fmt.Println(">> Usage:\n>> ./main go or git")
+		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
 		os.Exit(1)
 	}
 
 	var n string
+	flag.Parse()
 	switch os.Args[1] {
-	case "go":
-		goCmd.Parse(os.Args[2:])
-		//fmt.Println("subcommand 'go'")
-		//fmt.Println("goName:", *goName)
-		n = *goName
-	case "git":
-		gitCmd.Parse(os.Args[2:])
-		//fmt.Println("subcommand 'git'")
-		// fmt.Println("gitname:", *gitName)
-		n = *gitName
+	case "noop":
+		noopCmd.Parse(os.Args[2:])
+		fmt.Println(" > enable noop:", *noopEnable)
+		if *noopEnable == false {
+			fmt.Println("exiting noop case")
+			os.Exit(1)
+		}
+		n = *noopName
+	case "op":
+		opCmd.Parse(os.Args[2:])
+		fmt.Println(" > enable op:", *opEnable)
+		if *opEnable == false {
+			fmt.Println("exiting op case")
+			os.Exit(1)
+		}
+		n = *opName
 	case "help":
 		helpCmd.Parse(os.Args[2:])
-		fmt.Println(">> Usage:\n>> ./main go or git")
-		//fmt.Println("helpName:", *helpName)
+		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
 		n = *helpName
 		os.Exit(1)
 	}
-	// Command Executing
 
-	//p := "/usr/local/bin/puppet"
-	//pa := "agent"
-	//cmd := exec.Command(p, pa, n)
-	g := "git"
-	cmd := exec.Command(g, n)
-	//if runtime.GOOS == "windows" {
-	//	cmd = exec.Command("tasklist")
-	//}
+	// == Command Executing ==
+	p := "/usr/local/bin/puppet"
+	pw := "puppet"
+	pa := "agent"
+	t := "--test"
+	cmd := exec.Command(p, pa, t, n)
+	if runtime.GOOS == "windows" {
+		fmt.Println("Running on Windows:")
+		cmd = exec.Command(pw, pa, t, n)
+	}
 
 	// Maybe use a combinedOutput
 	// Attaching to Stdout and Stderr

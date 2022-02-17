@@ -5,7 +5,6 @@ import (
 	"os"
 )
 
-// ToDo:
 // 	Return 0 and 2 as successful (0)
 //	Return 1, 4 & 6 as error (1)
 
