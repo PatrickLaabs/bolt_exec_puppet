@@ -149,7 +149,3 @@ func exitHandle(outs []byte) {
 		code = 0
 	}
 }
-
-//func cmdArgsHandle() {
-//
-//}
