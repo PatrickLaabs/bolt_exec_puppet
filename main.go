@@ -11,9 +11,7 @@ import (
 )
 
 func main() {
-	//== SETTING ARGS ==
-	//Args: --noop, --no-noop, --tags-como
-	//--no-noop => https://puppet.com/docs/puppet/7/config_about_settings.html
+
 	noopCmd := flag.NewFlagSet("noop", flag.ExitOnError)
 	noopName := noopCmd.String("noop", "--noop", "puppet agent --noop")
 	noopEnable := noopCmd.Bool("enable", false, "enable")
@@ -69,10 +67,10 @@ func main() {
 	pa := "agent"
 	t := "--test"
 	cmd := exec.Command(p, pa, t, n)
-	//if runtime.GOOS == "windows" {
-	//	fmt.Println("Running on Windows:")
-	//	cmd = exec.Command(pw, pa, t, n)
-	//}
+	if runtime.GOOS == "windows" {
+  	fmt.Println("Running on Windows:")
+		cmd = exec.Command(pw, pa, t, n)
+	}
 
 	// Maybe use a combinedOutput
 	// Attaching to Stdout and Stderr
