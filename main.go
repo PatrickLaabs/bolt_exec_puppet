@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"runtime"
 	"strings"
 	"syscall"
 )
@@ -70,10 +69,10 @@ func main() {
 	pa := "agent"
 	t := "--test"
 	cmd := exec.Command(p, pa, t, n)
-	if runtime.GOOS == "windows" {
-		fmt.Println("Running on Windows:")
-		cmd = exec.Command(pw, pa, t, n)
-	}
+	//if runtime.GOOS == "windows" {
+	//	fmt.Println("Running on Windows:")
+	//	cmd = exec.Command(pw, pa, t, n)
+	//}
 
 	// Maybe use a combinedOutput
 	// Attaching to Stdout and Stderr
