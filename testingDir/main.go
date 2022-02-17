@@ -16,7 +16,7 @@ func main() {
 	//pa := "agent"
 	//t := "--test"
 
-	cmd := exec.Command("go", "blurb")
+	cmd := exec.Command("go", "version")
 	//if runtime.GOOS == "windows" {
 	//	fmt.Println("Running on Windows:")
 	//	cmd = exec.Command(pw, pa, t, n)
@@ -28,19 +28,16 @@ func main() {
 	//cmdStderr := &bytes.Buffer{}
 	//cmd.Stdout = cmdOutput
 	//cmd.Stderr = cmdStderr
-	out, _ := cmd.CombinedOutput()
+
+	// https://www.sobyte.net/post/2021-06/go-os-exec-short-tutorial/
+	
 	// Printing func printCommand
 	printCommand(cmd)
-
 	var waitStatus syscall.WaitStatus
 	// Starting the command saved inside cmd
 	if err := cmd.Run(); err != nil {
-
-		fmt.Printf("%s", string(out))
-		//printError(err)
-		fmt.Printf("%s", string(out))
+		printError(err)
 		if exitError, ok := err.(*exec.ExitError); ok {
-
 			//fmt.Println("Stderr ==> ", cmd.Stderr)
 			//fmt.Println("Stdout ==> ", cmd.Stdout)
 			waitStatus = exitError.Sys().(syscall.WaitStatus)
@@ -49,7 +46,6 @@ func main() {
 		}
 	} else {
 		waitStatus = cmd.ProcessState.Sys().(syscall.WaitStatus)
-
 		//fmt.Println("Stderr ==> ", cmd.Stderr)
 		//fmt.Println("Stdout ==> ", cmd.Stdout)
 		printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
