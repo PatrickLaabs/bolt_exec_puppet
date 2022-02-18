@@ -29,6 +29,7 @@ func main() {
 	// == Besser Lösung wird gesucht!
 	tagsCmd := flag.NewFlagSet("tags", flag.ExitOnError)
 	tagsName := tagsCmd.String("tags", "--tags", "puppet agent --tags")
+	tagsComoN := tagsCmd.String("tagsComo", "siguv_como", "siguv_como")
 
 	if len(os.Args) < 2 {
 		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
@@ -36,8 +37,8 @@ func main() {
 	}
 
 	var n string
-	var ta string
-	var ch [2]string
+	var nn string
+	var ccc string
 	flag.Parse()
 	switch os.Args[1] {
 	case "noop":
@@ -51,12 +52,8 @@ func main() {
 		fmt.Println("tail:", tagsCmd.Args())
 		fmt.Println("> tail:", flag.Args())
 		n = *tagsName
-		tail := tagsCmd.Args()
-		tailConv := strings.Join(tail, " ")
-		ta = tailConv
-		ch[0] = n
-		ch[1] = ta
-		fmt.Println(ch[0] + " " + ch[1])
+		nn = *tagsComoN
+		ccc = n + nn
 	case "help":
 		helpCmd.Parse(os.Args[2:])
 		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
@@ -64,16 +61,18 @@ func main() {
 		os.Exit(1)
 	}
 
+	// /Users/patricklaabs/puppet-infra-inside-docker/volumes/code/environments/production/manifests
+
 	// == Command Executing ==
 	// p := "/usr/local/bin/puppet"
 	p := "/opt/puppetlabs/puppet/bin/puppet"
 	pw := "puppet"
 	pa := "agent"
 	t := "--test"
-	cmd := exec.Command(p, pa, t, n, ta)
+	cmd := exec.Command(p, pa, t, ccc)
 	if runtime.GOOS == "windows" {
 		fmt.Println("Running on Windows:")
-		cmd = exec.Command(pw, pa, t, n)
+		cmd = exec.Command(pw, pa, t, ccc)
 	}
 
 	// Streaming Stderr and Stdout into a single Buffer
