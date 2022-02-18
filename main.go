@@ -53,7 +53,6 @@ func main() {
 		fmt.Println("> tail:", flag.Args())
 		n = *tagsName
 		nn = *tagsComoN
-		ccc = n + nn
 	case "help":
 		helpCmd.Parse(os.Args[2:])
 		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
@@ -69,10 +68,10 @@ func main() {
 	pw := "puppet"
 	pa := "agent"
 	t := "--test"
-	cmd := exec.Command(p, pa, t, ccc)
+	cmd := exec.Command(p, pa, t, n, nn)
 	if runtime.GOOS == "windows" {
 		fmt.Println("Running on Windows:")
-		cmd = exec.Command(pw, pa, t, ccc)
+		cmd = exec.Command(pw, pa, t, n, nn)
 	}
 
 	// Streaming Stderr and Stdout into a single Buffer
