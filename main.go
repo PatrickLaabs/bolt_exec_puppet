@@ -38,7 +38,7 @@ func main() {
 
 	var n string
 	var nn string
-	var ccc string
+	// var ccc string
 	flag.Parse()
 	switch os.Args[1] {
 	case "noop":
