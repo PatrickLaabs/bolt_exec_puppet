@@ -73,12 +73,10 @@ func main() {
 		cmd = exec.Command(pw, pa, t, n)
 	}
 
-	// Maybe use a combinedOutput
-	// Attaching to Stdout and Stderr
-	cmdOutput := &bytes.Buffer{}
-	cmdStderr := &bytes.Buffer{}
-	cmd.Stdout = cmdOutput
-	cmd.Stderr = cmdStderr
+	// Streaming Stderr and Stdout into a single Buffer
+	var b bytes.Buffer
+	cmd.Stdout = &b
+	cmd.Stderr = &b
 
 	// Printing func printCommand
 	printCommand(cmd)
@@ -86,18 +84,15 @@ func main() {
 	var waitStatus syscall.WaitStatus
 	// Starting the command saved inside cmd
 	if err := cmd.Run(); err != nil {
-		printError(err)
 		if exitError, ok := err.(*exec.ExitError); ok {
-			fmt.Println("Stderr ==> ", cmd.Stderr)
-			fmt.Println("Stdout ==> ", cmd.Stdout)
+			fmt.Println("CombinedOut:\n", string(b.Bytes()))
 			waitStatus = exitError.Sys().(syscall.WaitStatus)
 			printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 			exitHandle([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 		}
 	} else {
+		fmt.Println("CombinedOut:\n", string(b.Bytes()))
 		waitStatus = cmd.ProcessState.Sys().(syscall.WaitStatus)
-		fmt.Println("Stderr ==> ", cmd.Stderr)
-		fmt.Println("Stdout ==> ", cmd.Stdout)
 		printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 		exitHandle([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 	}
@@ -108,11 +103,11 @@ func printCommand(cmd *exec.Cmd) {
 	fmt.Printf("==> Executing: %s\n", strings.Join(cmd.Args, " "))
 }
 
-func printError(err error) {
-	if err != nil {
-		os.Stderr.WriteString(fmt.Sprintf("==> Error: %s\n", err.Error()))
-	}
-}
+//func printError(err error) {
+//	if err != nil {
+//		os.Stderr.WriteString(fmt.Sprintf("==> Error: %s\n", err.Error()))
+//	}
+//}
 
 func printOutput(outs []byte) {
 	if len(outs) > 0 {
