@@ -13,47 +13,60 @@ import (
 
 func main() {
 
+	// === Setting up flags ===
 	noopCmd := flag.NewFlagSet("noop", flag.ExitOnError)
 	noopName := noopCmd.String("noop", "--noop", "puppet agent --noop")
-	// noopEnable := noopCmd.Bool("enable", false, "enable")
 
 	opCmd := flag.NewFlagSet("op", flag.ExitOnError)
 	opName := opCmd.String("op", "--no-noop", "puppet agent --no-noop")
-	// opEnable := opCmd.Bool("enable", false, "enable")
 
 	helpCmd := flag.NewFlagSet("help", flag.ExitOnError)
 	helpName := helpCmd.String("help", "", "-h")
-	//
-	// == ToDo:
-	// == Value von tag Flag muss mit --tags=xxx befüllt werden. Also: tags-como=--tags=siguv_como
-	// == Besser Lösung wird gesucht!
-	//tagComoCmd := flag.NewFlagSet("tagcomo", flag.ExitOnError)
-	//tagComoName := tagComoCmd.String("tags-como", "--tags=siguv_como", "puppet agent --tags=siguv_como")
 
+	tagsCmd := flag.NewFlagSet("tags", flag.ExitOnError)
+	tagsName := tagsCmd.String("tags", "--tags=", "puppet agent --tags=<your module>")
+
+	// === Err checking, since we need at least 2 args ===
+	// may be deleted if not needed
 	if len(os.Args) < 2 {
 		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
 		os.Exit(1)
 	}
 
+	// === Init var's for usage out of scope ===
 	var n string
+	var ta string
+	var ch [2]string
+	var cha []string
+	var ccc string
+
+	// === Parsing the flags ===
 	flag.Parse()
+
+	// === Switch on args / flags that are called on runtime ===
 	switch os.Args[1] {
 	case "noop":
 		noopCmd.Parse(os.Args[2:])
-		//fmt.Println(" > enable noop:", *noopEnable)
-		//if *noopEnable == false {
-		//	fmt.Println("exiting noop case")
-		//	os.Exit(1)
-		//}
+		//fmt.Println("noopCmd.Args tail:", noopCmd.Args())
+		//fmt.Println("> tail:", flag.Args())
 		n = *noopName
 	case "op":
 		opCmd.Parse(os.Args[2:])
-		//fmt.Println(" > enable op:", *opEnable)
-		//if *opEnable == false {
-		//	fmt.Println("exiting op case")
-		//	os.Exit(1)
-		//}
 		n = *opName
+	case "tags":
+		tagsCmd.Parse(os.Args[2:])
+		n = *tagsName
+		tail := tagsCmd.Args()
+		tailConv := strings.Join(tail, " ")
+		ta = tailConv
+		ch[0] = n
+		ch[1] = ta
+		fmt.Println("output from array:", ch[0]+" "+ch[1])
+		cha = ch[1:2]
+		fmt.Println("cha output:", cha)
+		chaConv := strings.Join(cha, " ")
+		fmt.Println("chaConv output:", chaConv)
+		ccc = chaConv
 	case "help":
 		helpCmd.Parse(os.Args[2:])
 		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
@@ -67,7 +80,7 @@ func main() {
 	pw := "puppet"
 	pa := "agent"
 	t := "--test"
-	cmd := exec.Command(p, pa, t, n)
+	cmd := exec.Command(p, pa, t, ccc)
 	if runtime.GOOS == "windows" {
 		fmt.Println("Running on Windows:")
 		cmd = exec.Command(pw, pa, t, n)
