@@ -27,8 +27,8 @@ func main() {
 	// == ToDo:
 	// == Value von tag Flag muss mit --tags=xxx befüllt werden. Also: tags-como=--tags=siguv_como
 	// == Besser Lösung wird gesucht!
-	//tagComoCmd := flag.NewFlagSet("tagcomo", flag.ExitOnError)
-	//tagComoName := tagComoCmd.String("tags-como", "--tags=siguv_como", "puppet agent --tags=siguv_como")
+	tagsCmd := flag.NewFlagSet("tags", flag.ExitOnError)
+	tagsName := tagsCmd.String("tags", "--tags", "puppet agent --tags")
 
 	if len(os.Args) < 2 {
 		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
@@ -36,24 +36,27 @@ func main() {
 	}
 
 	var n string
+	var ta string
+	var ch [2]string
 	flag.Parse()
 	switch os.Args[1] {
 	case "noop":
 		noopCmd.Parse(os.Args[2:])
-		//fmt.Println(" > enable noop:", *noopEnable)
-		//if *noopEnable == false {
-		//	fmt.Println("exiting noop case")
-		//	os.Exit(1)
-		//}
 		n = *noopName
 	case "op":
 		opCmd.Parse(os.Args[2:])
-		//fmt.Println(" > enable op:", *opEnable)
-		//if *opEnable == false {
-		//	fmt.Println("exiting op case")
-		//	os.Exit(1)
-		//}
 		n = *opName
+	case "tags":
+		tagsCmd.Parse(os.Args[2:])
+		fmt.Println("tail:", tagsCmd.Args())
+		fmt.Println("> tail:", flag.Args())
+		n = *tagsName
+		tail := tagsCmd.Args()
+		tailConv := strings.Join(tail, " ")
+		ta = tailConv
+		ch[0] = n
+		ch[1] = ta
+		fmt.Println(ch[0] + " " + ch[1])
 	case "help":
 		helpCmd.Parse(os.Args[2:])
 		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
@@ -67,7 +70,7 @@ func main() {
 	pw := "puppet"
 	pa := "agent"
 	t := "--test"
-	cmd := exec.Command(p, pa, t, n)
+	cmd := exec.Command(p, pa, t, n, ta)
 	if runtime.GOOS == "windows" {
 		fmt.Println("Running on Windows:")
 		cmd = exec.Command(pw, pa, t, n)
