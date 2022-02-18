@@ -2,97 +2,57 @@ package main
 
 import (
 	"bytes"
-	"flag"
 	"fmt"
 	"os"
 	"os/exec"
-	"runtime"
 	"strings"
 	"syscall"
 )
 
 func main() {
-
-	noopCmd := flag.NewFlagSet("noop", flag.ExitOnError)
-	noopName := noopCmd.String("noop", "--noop", "puppet agent --noop")
-	// noopEnable := noopCmd.Bool("enable", false, "enable")
-
-	opCmd := flag.NewFlagSet("op", flag.ExitOnError)
-	opName := opCmd.String("op", "--no-noop", "puppet agent --no-noop")
-	// opEnable := opCmd.Bool("enable", false, "enable")
-
-	helpCmd := flag.NewFlagSet("help", flag.ExitOnError)
-	helpName := helpCmd.String("help", "", "-h")
-	//
-	// == ToDo:
-	// == Value von tag Flag muss mit --tags=xxx befüllt werden. Also: tags-como=--tags=siguv_como
-	// == Besser Lösung wird gesucht!
-	//tagComoCmd := flag.NewFlagSet("tagcomo", flag.ExitOnError)
-	//tagComoName := tagComoCmd.String("tags-como", "--tags=siguv_como", "puppet agent --tags=siguv_como")
-
-	if len(os.Args) < 2 {
-		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
-		os.Exit(1)
-	}
-
-	var n string
-	flag.Parse()
-	switch os.Args[1] {
-	case "noop":
-		noopCmd.Parse(os.Args[2:])
-		//fmt.Println(" > enable noop:", *noopEnable)
-		//if *noopEnable == false {
-		//	fmt.Println("exiting noop case")
-		//	os.Exit(1)
-		//}
-		n = *noopName
-	case "op":
-		opCmd.Parse(os.Args[2:])
-		//fmt.Println(" > enable op:", *opEnable)
-		//if *opEnable == false {
-		//	fmt.Println("exiting op case")
-		//	os.Exit(1)
-		//}
-		n = *opName
-	case "help":
-		helpCmd.Parse(os.Args[2:])
-		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
-		n = *helpName
-		os.Exit(1)
-	}
-
 	// == Command Executing ==
 	// p := "/usr/local/bin/puppet"
-	p := "/opt/puppetlabs/puppet/bin/puppet"
-	pw := "puppet"
-	pa := "agent"
-	t := "--test"
-	cmd := exec.Command(p, pa, t, n)
-	if runtime.GOOS == "windows" {
-		fmt.Println("Running on Windows:")
-		cmd = exec.Command(pw, pa, t, n)
-	}
+	//p := "/opt/puppetlabs/puppet/bin/puppet"
+	//pw := "puppet"
+	//pa := "agent"
+	//t := "--test"
 
-	// Streaming Stderr and Stdout into a single Buffer
+	cmd := exec.Command("go", "blurb")
+	//if runtime.GOOS == "windows" {
+	//	fmt.Println("Running on Windows:")
+	//	cmd = exec.Command(pw, pa, t, n)
+	//}
+
+	// Maybe use a combinedOutput
+	// Attaching to Stdout and Stderr
+	//cmdOutput := &bytes.Buffer{}
+	//cmdStderr := &bytes.Buffer{}
+	//cmd.Stdout = cmdOutput
+	//cmd.Stderr = cmdStderr
 	var b bytes.Buffer
 	cmd.Stdout = &b
 	cmd.Stderr = &b
+	// https://www.sobyte.net/post/2021-06/go-os-exec-short-tutorial/
 
 	// Printing func printCommand
 	printCommand(cmd)
-
 	var waitStatus syscall.WaitStatus
 	// Starting the command saved inside cmd
 	if err := cmd.Run(); err != nil {
+		// printError(err)
 		if exitError, ok := err.(*exec.ExitError); ok {
 			fmt.Println("CombinedOut:\n", string(b.Bytes()))
+			//fmt.Println("Stderr ==> ", cmd.Stderr)
+			//fmt.Println("Stdout ==> ", cmd.Stdout)
 			waitStatus = exitError.Sys().(syscall.WaitStatus)
 			printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 			exitHandle([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 		}
 	} else {
-		fmt.Println("CombinedOut:\n", string(b.Bytes()))
 		waitStatus = cmd.ProcessState.Sys().(syscall.WaitStatus)
+		fmt.Println("CombinedOut:\n", string(b.Bytes()))
+		//fmt.Println("Stderr ==> ", cmd.Stderr)
+		//fmt.Println("Stdout ==> ", cmd.Stdout)
 		printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 		exitHandle([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 	}
