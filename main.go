@@ -15,11 +15,11 @@ func main() {
 
 	noopCmd := flag.NewFlagSet("noop", flag.ExitOnError)
 	noopName := noopCmd.String("noop", "--noop", "puppet agent --noop")
-	noopEnable := noopCmd.Bool("enable", false, "enable")
+	// noopEnable := noopCmd.Bool("enable", false, "enable")
 
 	opCmd := flag.NewFlagSet("op", flag.ExitOnError)
 	opName := opCmd.String("op", "--no-noop", "puppet agent --no-noop")
-	opEnable := opCmd.Bool("enable", false, "enable")
+	// opEnable := opCmd.Bool("enable", false, "enable")
 
 	helpCmd := flag.NewFlagSet("help", flag.ExitOnError)
 	helpName := helpCmd.String("help", "", "-h")
@@ -40,19 +40,19 @@ func main() {
 	switch os.Args[1] {
 	case "noop":
 		noopCmd.Parse(os.Args[2:])
-		fmt.Println(" > enable noop:", *noopEnable)
-		if *noopEnable == false {
-			fmt.Println("exiting noop case")
-			os.Exit(1)
-		}
+		//fmt.Println(" > enable noop:", *noopEnable)
+		//if *noopEnable == false {
+		//	fmt.Println("exiting noop case")
+		//	os.Exit(1)
+		//}
 		n = *noopName
 	case "op":
 		opCmd.Parse(os.Args[2:])
-		fmt.Println(" > enable op:", *opEnable)
-		if *opEnable == false {
-			fmt.Println("exiting op case")
-			os.Exit(1)
-		}
+		//fmt.Println(" > enable op:", *opEnable)
+		//if *opEnable == false {
+		//	fmt.Println("exiting op case")
+		//	os.Exit(1)
+		//}
 		n = *opName
 	case "help":
 		helpCmd.Parse(os.Args[2:])
