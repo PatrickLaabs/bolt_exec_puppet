@@ -18,7 +18,7 @@ func main() {
 	// noopEnable := noopCmd.Bool("enable", false, "enable")
 
 	opCmd := flag.NewFlagSet("op", flag.ExitOnError)
-	opName := opCmd.String("op", "--no-noop", "puppet agent --no-noop")
+	opName := opCmd.String("op", "", "puppet agent --no-noop")
 	// opEnable := opCmd.Bool("enable", false, "enable")
 
 	helpCmd := flag.NewFlagSet("help", flag.ExitOnError)
@@ -62,8 +62,8 @@ func main() {
 	}
 
 	// == Command Executing ==
-	p := "/usr/local/bin/puppet"
-	// p := "/opt/puppetlabs/puppet/bin/puppet"
+	// p := "/usr/local/bin/puppet"
+	p := "/opt/puppetlabs/puppet/bin/puppet"
 	pw := "puppet"
 	pa := "agent"
 	t := "--test"
