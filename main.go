@@ -13,50 +13,87 @@ import (
 
 func main() {
 
+	// === Setting up flags ===
+	// ./bolt_exec noop
 	noopCmd := flag.NewFlagSet("noop", flag.ExitOnError)
 	noopName := noopCmd.String("noop", "--noop", "puppet agent --noop")
-	// noopEnable := noopCmd.Bool("enable", false, "enable")
 
+	// ./bolt_exec op
 	opCmd := flag.NewFlagSet("op", flag.ExitOnError)
 	opName := opCmd.String("op", "--no-noop", "puppet agent --no-noop")
-	// opEnable := opCmd.Bool("enable", false, "enable")
 
+	// ./bolt_exec help
 	helpCmd := flag.NewFlagSet("help", flag.ExitOnError)
 	helpName := helpCmd.String("help", "", "-h")
-	//
-	// == ToDo:
-	// == Value von tag Flag muss mit --tags=xxx befüllt werden. Also: tags-como=--tags=siguv_como
-	// == Besser Lösung wird gesucht!
-	//tagComoCmd := flag.NewFlagSet("tagcomo", flag.ExitOnError)
-	//tagComoName := tagComoCmd.String("tags-como", "--tags=siguv_como", "puppet agent --tags=siguv_como")
 
+	// ./bolt_exec tags -add=<module> -start=--noop
+	tagsCmd := flag.NewFlagSet("tags", flag.ExitOnError)
+	tagsName := tagsCmd.String("tags", "--tags", "puppet agent --tags=")
+	tagsStart := tagsCmd.String("start", "--noop", "choose between op or noop")
+	tagsAdd := tagsCmd.String("add", "", "additional args like your module name")
+
+	// ./bolt_exec skip -add=<module> -start=--noop
+	skipTagsCmd := flag.NewFlagSet("skip_tags", flag.ExitOnError)
+	skipTagsName := skipTagsCmd.String("skip", "--skip_tags", "skipping tags")
+	skipTagsStart := skipTagsCmd.String("start", "--noop", "choose between op or noop")
+	skipTagsAdd := skipTagsCmd.String("add", "", "module name to skip")
+
+	// === Err checking, since we need at least 2 args ===
+	// may be deleted if not needed
 	if len(os.Args) < 2 {
-		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
+		fmt.Println(">> Usage:\n./bolt_puppet_exec noop \n" +
+			"./bolt_exec op\n" +
+			"./bolt_exec help\n" +
+			"./bolt_exec tags -add=<module> -start=--noop\n" +
+			"./bolt_exec skip -add=<module> -start=--noop")
 		os.Exit(1)
 	}
 
+	// === Init var's for usage out of scope ===
 	var n string
+	var nn string
+	var nm string
+	var args []string
+	// === Parsing the flags ===
 	flag.Parse()
+
+	// === Switch on args / flags that are called on runtime ===
 	switch os.Args[1] {
 	case "noop":
+		pa := "agent"
+		t := "--test"
 		noopCmd.Parse(os.Args[2:])
-		//fmt.Println(" > enable noop:", *noopEnable)
-		//if *noopEnable == false {
-		//	fmt.Println("exiting noop case")
-		//	os.Exit(1)
-		//}
 		n = *noopName
+		args = []string{pa, t, n}
 	case "op":
+		pa := "agent"
+		t := "--test"
 		opCmd.Parse(os.Args[2:])
-		//fmt.Println(" > enable op:", *opEnable)
-		//if *opEnable == false {
-		//	fmt.Println("exiting op case")
-		//	os.Exit(1)
-		//}
 		n = *opName
+		args = []string{pa, t, n}
+	case "tags":
+		pa := "agent"
+		t := "--test"
+		tagsCmd.Parse(os.Args[2:])
+		n = *tagsName
+		nn = *tagsAdd
+		nm = *tagsStart
+		args = []string{pa, t, nm, n, nn}
+	case "skip":
+		pa := "agent"
+		t := "--test"
+		skipTagsCmd.Parse(os.Args[2:])
+		n = *skipTagsName
+		nn = *skipTagsAdd
+		nm = *skipTagsStart
+		args = []string{pa, t, nm, n, nn}
 	case "help":
 		helpCmd.Parse(os.Args[2:])
-		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
+		fmt.Println(">> Usage:\n./bolt_puppet_exec noop \n" +
+			"./bolt_exec op\n" +
+			"./bolt_exec help\n" +
+			"./bolt_exec tags -add=<module> -start=--noop\n" +
+			"./bolt_exec skip -add=<module> -start=--noop")
 		n = *helpName
 		os.Exit(1)
 	}
@@ -65,12 +102,10 @@ func main() {
 	// p := "/usr/local/bin/puppet"
 	p := "/opt/puppetlabs/puppet/bin/puppet"
 	pw := "puppet"
-	pa := "agent"
-	t := "--test"
-	cmd := exec.Command(p, pa, t, n)
+	cmd := exec.Command(p, args...)
 	if runtime.GOOS == "windows" {
 		fmt.Println("Running on Windows:")
-		cmd = exec.Command(pw, pa, t, n)
+		cmd = exec.Command(pw, args...)
 	}
 
 	// Streaming Stderr and Stdout into a single Buffer
@@ -102,12 +137,6 @@ func printCommand(cmd *exec.Cmd) {
 	// Printing executed command. Just for knowing that the run has started.
 	fmt.Printf("==> Executing: %s\n", strings.Join(cmd.Args, " "))
 }
-
-//func printError(err error) {
-//	if err != nil {
-//		os.Stderr.WriteString(fmt.Sprintf("==> Error: %s\n", err.Error()))
-//	}
-//}
 
 func printOutput(outs []byte) {
 	if len(outs) > 0 {
