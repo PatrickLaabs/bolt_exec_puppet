@@ -25,8 +25,13 @@ func main() {
 
 	tagsCmd := flag.NewFlagSet("tags", flag.ExitOnError)
 	tagsName := tagsCmd.String("tags", "--tags", "puppet agent --tags=")
-	tagsStart := tagsCmd.String("start", "noop", "choose between op or noop")
+	tagsStart := tagsCmd.String("start", "--noop", "choose between op or noop")
 	tagsAdd := tagsCmd.String("add", "", "additional args like your module name")
+
+	skipTagsCmd := flag.NewFlagSet("skip_tags", flag.ExitOnError)
+	skipTagsName := skipTagsCmd.String("skip", "--skip_tags", "skipping tags")
+	skipTagsStart := skipTagsCmd.String("start", "--noop", "choose between op or noop")
+	skipTagsAdd := skipTagsCmd.String("add", "", "module name to skip")
 
 	// === Err checking, since we need at least 2 args ===
 	// may be deleted if not needed
@@ -64,6 +69,14 @@ func main() {
 		n = *tagsName
 		nn = *tagsAdd
 		nm = *tagsStart
+		args = []string{pa, t, nm, n, nn}
+	case "skip":
+		pa := "agent"
+		t := "--test"
+		skipTagsCmd.Parse(os.Args[2:])
+		n = *skipTagsName
+		nn = *skipTagsAdd
+		nm = *skipTagsStart
 		args = []string{pa, t, nm, n, nn}
 	case "help":
 		helpCmd.Parse(os.Args[2:])
