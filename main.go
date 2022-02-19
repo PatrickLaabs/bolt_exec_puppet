@@ -24,7 +24,9 @@ func main() {
 	helpName := helpCmd.String("help", "", "-h")
 
 	tagsCmd := flag.NewFlagSet("tags", flag.ExitOnError)
-	tagsName := tagsCmd.String("tags", "--tags=", "puppet agent --tags=<your module>")
+	tagsName := tagsCmd.String("tags", "--tags", "puppet agent --tags=")
+	tagsStart := tagsCmd.String("start", "noop", "choose between op or noop")
+	tagsAdd := tagsCmd.String("add", "", "additional args like your module name")
 
 	// === Err checking, since we need at least 2 args ===
 	// may be deleted if not needed
@@ -35,38 +37,34 @@ func main() {
 
 	// === Init var's for usage out of scope ===
 	var n string
-	var ta string
-	var ch [2]string
-	var cha []string
-	var ccc string
-
+	var nn string
+	var nm string
+	var args []string
 	// === Parsing the flags ===
 	flag.Parse()
 
 	// === Switch on args / flags that are called on runtime ===
 	switch os.Args[1] {
 	case "noop":
+		pa := "agent"
+		t := "--test"
 		noopCmd.Parse(os.Args[2:])
-		//fmt.Println("noopCmd.Args tail:", noopCmd.Args())
-		//fmt.Println("> tail:", flag.Args())
 		n = *noopName
+		args = []string{pa, t, n}
 	case "op":
+		pa := "agent"
+		t := "--test"
 		opCmd.Parse(os.Args[2:])
 		n = *opName
+		args = []string{pa, t, n}
 	case "tags":
+		pa := "agent"
+		t := "--test"
 		tagsCmd.Parse(os.Args[2:])
 		n = *tagsName
-		tail := tagsCmd.Args()
-		tailConv := strings.Join(tail, " ")
-		ta = tailConv
-		ch[0] = n
-		ch[1] = ta
-		fmt.Println("output from array:", ch[0]+" "+ch[1])
-		cha = ch[1:2]
-		fmt.Println("cha output:", cha)
-		chaConv := strings.Join(cha, " ")
-		fmt.Println("chaConv output:", chaConv)
-		ccc = chaConv
+		nn = *tagsAdd
+		nm = *tagsStart
+		args = []string{pa, t, nm, n, nn}
 	case "help":
 		helpCmd.Parse(os.Args[2:])
 		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
@@ -78,12 +76,10 @@ func main() {
 	// p := "/usr/local/bin/puppet"
 	p := "/opt/puppetlabs/puppet/bin/puppet"
 	pw := "puppet"
-	pa := "agent"
-	t := "--test"
-	cmd := exec.Command(p, pa, t, ccc)
+	cmd := exec.Command(p, args...)
 	if runtime.GOOS == "windows" {
 		fmt.Println("Running on Windows:")
-		cmd = exec.Command(pw, pa, t, n)
+		cmd = exec.Command(pw, args...)
 	}
 
 	// Streaming Stderr and Stdout into a single Buffer
