@@ -14,20 +14,25 @@ import (
 func main() {
 
 	// === Setting up flags ===
+	// ./bolt_exec noop
 	noopCmd := flag.NewFlagSet("noop", flag.ExitOnError)
 	noopName := noopCmd.String("noop", "--noop", "puppet agent --noop")
 
+	// ./bolt_exec op
 	opCmd := flag.NewFlagSet("op", flag.ExitOnError)
 	opName := opCmd.String("op", "--no-noop", "puppet agent --no-noop")
 
+	// ./bolt_exec help
 	helpCmd := flag.NewFlagSet("help", flag.ExitOnError)
 	helpName := helpCmd.String("help", "", "-h")
 
+	// ./bolt_exec tags -add=<module> -start=--noop
 	tagsCmd := flag.NewFlagSet("tags", flag.ExitOnError)
 	tagsName := tagsCmd.String("tags", "--tags", "puppet agent --tags=")
 	tagsStart := tagsCmd.String("start", "--noop", "choose between op or noop")
 	tagsAdd := tagsCmd.String("add", "", "additional args like your module name")
 
+	// ./bolt_exec skip -add=<module> -start=--noop
 	skipTagsCmd := flag.NewFlagSet("skip_tags", flag.ExitOnError)
 	skipTagsName := skipTagsCmd.String("skip", "--skip_tags", "skipping tags")
 	skipTagsStart := skipTagsCmd.String("start", "--noop", "choose between op or noop")
@@ -36,7 +41,11 @@ func main() {
 	// === Err checking, since we need at least 2 args ===
 	// may be deleted if not needed
 	if len(os.Args) < 2 {
-		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
+		fmt.Println(">> Usage:\n./bolt_puppet_exec noop \n" +
+			"./bolt_exec op\n" +
+			"./bolt_exec help\n" +
+			"./bolt_exec tags -add=<module> -start=--noop\n" +
+			"./bolt_exec skip -add=<module> -start=--noop")
 		os.Exit(1)
 	}
 
@@ -80,7 +89,11 @@ func main() {
 		args = []string{pa, t, nm, n, nn}
 	case "help":
 		helpCmd.Parse(os.Args[2:])
-		fmt.Println(">> Usage:\n>> ./bolt_puppet_exec noop or op")
+		fmt.Println(">> Usage:\n./bolt_puppet_exec noop \n" +
+			"./bolt_exec op\n" +
+			"./bolt_exec help\n" +
+			"./bolt_exec tags -add=<module> -start=--noop\n" +
+			"./bolt_exec skip -add=<module> -start=--noop")
 		n = *helpName
 		os.Exit(1)
 	}
