@@ -12,7 +12,7 @@ The exit code is handled inside the go code with a switch statement.
 
 ### ToDos:
 
-* [ ] Project renaming to 'puppet_bolt_exec'
+* [x] Project renaming to 'puppet_bolt_exec'
 * [ ] Update README for usage instructions of this binary
 * [ ] Prepare Build-Pipeline on Jenkins
 * [ ] Running tests on linux systems
@@ -23,14 +23,12 @@ The exit code is handled inside the go code with a switch statement.
 ----
 ### Usage Instructions:
 
-```/bolt_puppet_exec noop```
+```./puppet_bolt_exec noop```
 
-```./bolt_exec op\```
+```./puppet_bolt_exec op```
 
-```./bolt_exec op```
+```./puppet_bolt_exec help```
 
-```./bolt_exec help```
+```./puppet_bolt_exec tags -add=<module> -start=--noop```
 
-```./bolt_exec tags -add=<module> -start=--noop```
-
-```./bolt_exec skip -add=<module> -start=--noop```
+```./puppet_bolt_exec skip -add=<module> -start=--noop```
