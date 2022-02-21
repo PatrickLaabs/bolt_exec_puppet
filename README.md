@@ -19,6 +19,8 @@ The exit code is handled inside the go code with a switch statement.
 * [ ] Running tests on Windows systems
   * [ ] Check if 'if'-Statement works as intended on Windows
   * [ ] Check for Exit Code handling on Windows systems
+* [ ] Print detailed Exit code before handling func exitHandle switch statement.
+  (Using a Flag, printing the exit code without handling)
 
 ----
 ### Usage Instructions:

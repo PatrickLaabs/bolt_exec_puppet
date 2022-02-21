@@ -99,8 +99,8 @@ func main() {
 	}
 
 	// == Command Executing ==
-	// p := "/usr/local/bin/puppet"
-	p := "/opt/puppetlabs/puppet/bin/puppet"
+	p := "/usr/local/bin/puppet"
+	// p := "/opt/puppetlabs/puppet/bin/puppet"
 	pw := "puppet"
 	cmd := exec.Command(p, args...)
 	if runtime.GOOS == "windows" {
