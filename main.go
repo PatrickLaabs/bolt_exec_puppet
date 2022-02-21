@@ -99,8 +99,8 @@ func main() {
 	}
 
 	// == Command Executing ==
-	p := "/usr/local/bin/puppet"
-	// p := "/opt/puppetlabs/puppet/bin/puppet"
+	// p := "/usr/local/bin/puppet"
+	p := "/opt/puppetlabs/puppet/bin/puppet"
 	pw := "puppet"
 	cmd := exec.Command(p, args...)
 	if runtime.GOOS == "windows" {
@@ -120,13 +120,15 @@ func main() {
 	// Starting the command saved inside cmd
 	if err := cmd.Run(); err != nil {
 		if exitError, ok := err.(*exec.ExitError); ok {
-			fmt.Println("CombinedOut:\n", string(b.Bytes()))
+			// fmt.Println("CombinedOut:\n", string(b.Bytes()))
+			fmt.Println("CombinedOut:\n", b.String())
 			waitStatus = exitError.Sys().(syscall.WaitStatus)
 			printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 			exitHandle([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 		}
 	} else {
-		fmt.Println("CombinedOut:\n", string(b.Bytes()))
+		// fmt.Println("CombinedOut:\n", string(b.Bytes()))
+		fmt.Println("CombinedOut:\n", b.String())
 		waitStatus = cmd.ProcessState.Sys().(syscall.WaitStatus)
 		printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 		exitHandle([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
