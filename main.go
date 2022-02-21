@@ -13,6 +13,8 @@ import (
 
 func main() {
 
+	// Build the Flags like puppet would handle them originally.
+	
 	// === Setting up flags ===
 	// ./bolt_exec noop
 	noopCmd := flag.NewFlagSet("noop", flag.ExitOnError)
@@ -65,6 +67,7 @@ func main() {
 		noopCmd.Parse(os.Args[2:])
 		n = *noopName
 		args = []string{pa, t, n}
+		// if tags (n) == empty remove n from args []string
 	case "op":
 		pa := "agent"
 		t := "--test"
@@ -101,7 +104,8 @@ func main() {
 	// == Command Executing ==
 	p := "/usr/local/bin/puppet"
 	// p := "/opt/puppetlabs/puppet/bin/puppet"
-	pw := "puppet"
+	// Windows Pathes needs to be in \
+	pw := "C:/ProgramFiles/Puppet Labs/bin"
 	cmd := exec.Command(p, args...)
 	if runtime.GOOS == "windows" {
 		fmt.Println("Running on Windows:")
