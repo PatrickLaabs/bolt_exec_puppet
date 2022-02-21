@@ -12,13 +12,16 @@ import (
 
 func main() {
 
+	// puppet agent --test --noop --tags --skip_tags
+
 	// Build the Flags like puppet would handle them originally.
 	goCmd := flag.NewFlagSet("go", flag.ExitOnError)
 	goName := goCmd.String("version", "version", "go version")
 
-	buildCmd := flag.NewFlagSet("build", flag.ExitOnError)
+	buildCmd := flag.NewFlagSet("build", flag.ContinueOnError)
 	buildName := buildCmd.String("build", "build", "go build")
-	buildAdd := buildCmd.String("add", "", "main.go")
+	buildAdd := buildCmd.String("add", "main.go", "main.go")
+	buildBool := buildCmd.Bool("noop", true, "bool for noop")
 
 	// === Setting up flags ===
 	// ./bolt_exec noop
@@ -60,6 +63,8 @@ func main() {
 	var n string
 	var nn string
 	var nm string
+	var nb bool
+	var nbn string
 	var args []string
 	// === Parsing the flags ===
 	flag.Parse()
@@ -87,13 +92,21 @@ func main() {
 		buildCmd.Parse(os.Args[2:])
 		n = *buildName
 		nm = *buildAdd
+		nb = *buildBool
+		if nb == true {
+			fmt.Println("bool is false")
+			nbn = "--noop"
+		} else if nb != true {
+			fmt.Println("bool is true")
+			nbn = "--no-noop"
+		}
 		if nm == "" {
 			fmt.Println("no additional args set")
-			args = []string{n}
+			args = []string{n, nbn}
 			fmt.Printf("args passed: %s\n", args)
 		} else {
 			fmt.Printf("Args set to: %s\n", nm)
-			args = []string{n, nm}
+			args = []string{n, nm, nbn}
 			fmt.Printf("args passed: %s\n", args)
 		}
 	case "tags":
