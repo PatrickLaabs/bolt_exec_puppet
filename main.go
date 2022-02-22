@@ -14,9 +14,9 @@ import (
 func main() {
 
 	type AgentCmd struct {
-		PuppetTest  bool   `arg:"--test"`
-		Noop        bool   `arg:"--noop"`
-		Op          bool   `arg:"--no-noop"`
+		PuppetTest bool `arg:"--test"`
+		Noop       bool `arg:"--noop"`
+		// Op          bool   `arg:"--no-noop"`
 		Tags        bool   `arg:"--tags"`
 		TagsAdd     string `arg:"-a"`
 		SkipTags    bool   `arg:"--skip_tags"`
@@ -49,11 +49,10 @@ func main() {
 
 		if args.Agent.Noop == true {
 			pt = "--noop"
-		} else if args.Agent.Op == true {
-			pt = "--no-noop"
+			argu = []string{pa, putest, pt}
 		}
 
-		argu = []string{pa, putest, pt}
+		argu = []string{pa, putest}
 
 		if args.Agent.Tags == true {
 			ptags = "--tags"
