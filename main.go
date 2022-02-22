@@ -67,8 +67,8 @@ func main() {
 	}
 
 	// == Command Executing ==
-	// p := "/usr/local/bin/puppet"
-	p := "/opt/puppetlabs/puppet/bin/puppet"
+	p := "/usr/local/bin/puppet"
+	// p := "/opt/puppetlabs/puppet/bin/puppet"
 	// Windows Pathes needs to be in \
 	pw := "C:/ProgramFiles/Puppet Labs/bin"
 	cmd := exec.Command(p, argu...)
