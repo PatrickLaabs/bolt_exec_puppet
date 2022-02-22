@@ -25,17 +25,19 @@ func main() {
 	flag.Parse()
 
 	fmt.Println("stored values:", myFlags)
-	fmt.Println("first arg:", myFlags[1])
+	fmt.Println("first arg:", myFlags[0])
 
 	cmd := exec.Command("go")
 	if len(myFlags) == 1 {
-		cmd = exec.Command(myFlags[0])
+		cmd = exec.Command("go", myFlags...)
 		fmt.Println("len == 1", myFlags)
 	} else if len(myFlags) == 2 {
-		cmd = exec.Command(myFlags[0], myFlags[1])
+		// cmd = exec.Command(myFlags[0], myFlags[1])
+		cmd = exec.Command("go", myFlags...)
 		fmt.Println("len == 2", myFlags)
 	} else if len(myFlags) == 3 {
-		cmd = exec.Command(myFlags[0], myFlags[1], myFlags[2])
+		// cmd = exec.Command(myFlags[0], myFlags[1], myFlags[2])
+		cmd = exec.Command("go", myFlags...)
 		fmt.Println("len == 3", myFlags)
 	}
 
