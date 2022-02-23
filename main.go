@@ -17,13 +17,27 @@ func main() {
 		PuppetTest bool   `arg:"--test"`
 		Noop       bool   `arg:"--noop"`
 		Tags       string `arg:"--tags"`
-		//TagsAdd     string `arg:"-a"`
-		SkipTags string `arg:"--skip_tags"`
-		// SkipTagsAdd string `arg:"-b"`
+		SkipTags   string `arg:"--skip_tags"`
 	}
 
 	var args struct {
 		Agent *AgentCmd `arg:"subcommand:agent"`
+	}
+
+	if len(os.Args) < 3 {
+		fmt.Println("General usage:\n" +
+			"bolt_exec agent [--test] [--noop] [--tags TAGS] [--skip_tags SKIP_TAGS]\n\n" +
+			"Some examples:\n" +
+			"  ./bolt_exec_puppet agent --test\n" +
+			"  ./bolt_exec_puppet agent --test --noop\n\n" +
+			"  ./bolt_exec_puppet agent --test --noop --tags=<module>\n" +
+			"  ./bolt_exec_puppet agent --test --noop --tags <module>\n\n" +
+			"  ./bolt_exec_puppet agent --test --noop --skip_tags=<module>\n" +
+			"  ./bolt_exec_puppet agent --test --noop --skip_tags <module>\n\n" +
+			"A combination of both --tags and --skip_tags is also possible:\n" +
+			"  ./bolt_exec_puppet agent --test --noop --tags=<module> --skip_tags=<module>\n\n" +
+			"Every possibility can be run without --noop")
+		os.Exit(1)
 	}
 
 	arg.MustParse(&args)
@@ -31,8 +45,6 @@ func main() {
 	var argu []string
 	var pa string
 	var pt string
-	// var ptags string
-	// var stags string
 	var putest string
 
 	//flag.Parse()
@@ -58,24 +70,38 @@ func main() {
 		//	argu = []string{pa, putest, pt, ptags, args.Agent.TagsAdd}
 		//}
 
-		if args.Agent.SkipTags != "" {
+		if args.Agent.SkipTags != "" && args.Agent.Noop == true {
 			data := args.Agent.SkipTags
 			response := fmt.Sprintf("--skip_tags=%s", data)
 			argu = []string{pa, putest, pt, response}
+		} else if args.Agent.SkipTags != "" && args.Agent.Noop != true {
+			data := args.Agent.SkipTags
+			response := fmt.Sprintf("--skip_tags=%s", data)
+			argu = []string{pa, putest, response}
 		}
 
-		if args.Agent.Tags != "" {
+		if args.Agent.Tags != "" && args.Agent.Noop == true {
 			data := args.Agent.Tags
 			response := fmt.Sprintf("--tags=%s", data)
 			argu = []string{pa, putest, pt, response}
+		} else if args.Agent.Tags != "" && args.Agent.Noop != true {
+			data := args.Agent.Tags
+			response := fmt.Sprintf("--tags=%s", data)
+			argu = []string{pa, putest, response}
 		}
 
-		if args.Agent.SkipTags != "" && args.Agent.Tags != "" {
+		if args.Agent.SkipTags != "" && args.Agent.Tags != "" && args.Agent.Noop == true {
 			dataTags := args.Agent.Tags
 			resTags := fmt.Sprintf("--tags=%s", dataTags)
 			dataSkip := args.Agent.SkipTags
 			resSkip := fmt.Sprintf("--skip_tags=%s", dataSkip)
 			argu = []string{pa, putest, pt, resTags, resSkip}
+		} else if args.Agent.SkipTags != "" && args.Agent.Tags != "" && args.Agent.Noop != true {
+			dataTags := args.Agent.Tags
+			resTags := fmt.Sprintf("--tags=%s", dataTags)
+			dataSkip := args.Agent.SkipTags
+			resSkip := fmt.Sprintf("--skip_tags=%s", dataSkip)
+			argu = []string{pa, putest, resTags, resSkip}
 		}
 
 	}
