@@ -12,7 +12,7 @@ The exit code is handled inside the go code with a switch statement.
 
 ### ToDos:
 
-* [ ] Project renaming to 'bolt_exec_puppet'
+* [x] Project renaming to 'bolt_exec_puppet'
 * [x] Update README for usage instructions of this binary
 * [ ] Prepare Build-Pipeline on Jenkins
 * [ ] Running tests on linux systems
