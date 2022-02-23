@@ -14,13 +14,12 @@ import (
 func main() {
 
 	type AgentCmd struct {
-		PuppetTest bool `arg:"--test"`
-		Noop       bool `arg:"--noop"`
-		// Op          bool   `arg:"--no-noop"`
-		Tags        bool   `arg:"--tags"`
-		TagsAdd     string `arg:"-a"`
-		SkipTags    bool   `arg:"--skip_tags"`
-		SkipTagsAdd string `arg:"-b"`
+		PuppetTest bool   `arg:"--test"`
+		Noop       bool   `arg:"--noop"`
+		Tags       string `arg:"--tags"`
+		//TagsAdd     string `arg:"-a"`
+		SkipTags string `arg:"--skip_tags"`
+		// SkipTagsAdd string `arg:"-b"`
 	}
 
 	var args struct {
@@ -32,8 +31,8 @@ func main() {
 	var argu []string
 	var pa string
 	var pt string
-	var ptags string
-	var stags string
+	// var ptags string
+	// var stags string
 	var putest string
 
 	//flag.Parse()
@@ -47,22 +46,38 @@ func main() {
 			putest = "--test"
 		}
 
+		argu = []string{pa, putest}
+
 		if args.Agent.Noop == true {
 			pt = "--noop"
 			argu = []string{pa, putest, pt}
 		}
 
-		argu = []string{pa, putest}
+		//if args.Agent.Tags == true {
+		//	ptags = "--tags"
+		//	argu = []string{pa, putest, pt, ptags, args.Agent.TagsAdd}
+		//}
 
-		if args.Agent.Tags == true {
-			ptags = "--tags"
-			argu = []string{pa, putest, pt, ptags, args.Agent.TagsAdd}
+		if args.Agent.SkipTags != "" {
+			data := args.Agent.SkipTags
+			response := fmt.Sprintf("--skip_tags=%s", data)
+			argu = []string{pa, putest, pt, response}
 		}
 
-		if args.Agent.SkipTags == true {
-			stags = "--skip_tags"
-			argu = []string{pa, putest, pt, stags, args.Agent.SkipTagsAdd}
+		if args.Agent.Tags != "" {
+			data := args.Agent.Tags
+			response := fmt.Sprintf("--tags=%s", data)
+			argu = []string{pa, putest, pt, response}
 		}
+
+		if args.Agent.SkipTags != "" && args.Agent.Tags != "" {
+			dataTags := args.Agent.Tags
+			resTags := fmt.Sprintf("--tags=%s", dataTags)
+			dataSkip := args.Agent.SkipTags
+			resSkip := fmt.Sprintf("--skip_tags=%s", dataSkip)
+			argu = []string{pa, putest, pt, resTags, resSkip}
+		}
+
 	}
 
 	// == Command Executing ==
