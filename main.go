@@ -25,13 +25,13 @@ func main() {
 	}
 
 	if len(os.Args) < 3 {
-		fmt.Println("Version: v0.1.14\n\n" +
+		fmt.Println("Version: v0.1.15\n\n" +
 			"Options:\n" +
 			"bolt_exec_puppet --help\n\n" +
 			"General usage:\n" +
 			"bolt_exec_puppet agent [--test] [--noop] [--tags TAGS] [--skip_tags SKIP_TAGS]\n\n" +
 			"Exit Codes:\n" +
-			"  Puppet Exit Codes 0 & 2 are handled as Exit Code 0\n" +
+			"  Puppet Exit Codes 0, 2 are handled as Exit Code 0\n" +
 			"  Puppet Exit Codes 1, 4, 6 are handled as Exit Code 1\n\n" +
 			"Some examples:\n" +
 			"  bolt_exec_puppet agent --test\n" +

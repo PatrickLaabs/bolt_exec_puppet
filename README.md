@@ -37,7 +37,7 @@ bolt_exec_puppet agent --help
 `bolt_exec_puppet agent [--test] [--noop] [--tags TAGS] [--skip_tags SKIP_TAGS]`
 
 ### Exit Codes:
-Puppet Exit Codes 0 & 2 are handled as Exit Code 0
+Puppet Exit Codes 0, 2 are handled as Exit Code 0
 
 Puppet Exit Codes 1, 4, 6 are handled as Exit Code 1
 
