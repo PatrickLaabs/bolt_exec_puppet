@@ -12,8 +12,8 @@ The exit code is handled inside the go code with a switch statement.
 
 ### ToDos:
 
-* [x] Project renaming to 'puppet_bolt_exec'
-* [ ] Update README for usage instructions of this binary
+* [ ] Project renaming to 'bolt_exec_puppet'
+* [x] Update README for usage instructions of this binary
 * [ ] Prepare Build-Pipeline on Jenkins
 * [ ] Running tests on linux systems
 * [ ] Running tests on Windows systems
@@ -21,16 +21,33 @@ The exit code is handled inside the go code with a switch statement.
   * [ ] Check for Exit Code handling on Windows systems
 * [ ] Print detailed Exit code before handling func exitHandle switch statement.
   (Using a Flag, printing the exit code without handling)
-
+* [x] **FIX:** running _only_ the binary does not result in an error. Print help menu instead.
+* [x] **FIX:** running `./binary <flag>` returns the command into the exec.Command interface. Return an error instead.
+* [x] **FIX:** improve `./binary --help` menu, to show a more specific way how to use this binary.
+* [x] **FIX:** running `./binary agent --test --tags=<module>`  without `--noop` results in an error, because we're returning an empty string.
 ----
 ### Usage Instructions:
 
-```./puppet_bolt_exec noop```
+General usage:
 
-```./puppet_bolt_exec op```
+`bolt_exec_puppet agent [--test] [--noop] [--tags TAGS] [--skip_tags SKIP_TAGS]`
 
-```./puppet_bolt_exec help```
+Some examples:
 
-```./puppet_bolt_exec tags -add=<module> -start=--noop```
+  `./bolt_exec_puppet agent --test`
 
-```./puppet_bolt_exec skip -add=<module> -start=--noop```
+  `./bolt_exec_puppet agent --test --noop`
+
+  `./bolt_exec_puppet agent --test --noop --tags=<module>`
+
+  `./bolt_exec_puppet agent --test --noop --tags <module>`
+
+  `./bolt_exec_puppet agent --test --noop --skip_tags=<module>`
+
+  `./bolt_exec_puppet agent --test --noop --skip_tags <module>`
+
+A combination of both --tags and --skip_tags is also possible:
+
+  `./bolt_exec_puppet agent --test --noop --tags=<module> --skip_tags=<module>`
+
+Every possibility can be run without --noop

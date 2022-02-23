@@ -2,8 +2,8 @@ package main
 
 import (
 	"bytes"
-	"flag"
 	"fmt"
+	"github.com/alexflint/go-arg"
 	"os"
 	"os/exec"
 	"runtime"
@@ -13,92 +13,97 @@ import (
 
 func main() {
 
-	// Build the Flags like puppet would handle them originally.
-	
-	// === Setting up flags ===
-	// ./bolt_exec noop
-	noopCmd := flag.NewFlagSet("noop", flag.ExitOnError)
-	noopName := noopCmd.String("noop", "--noop", "puppet agent --noop")
+	type AgentCmd struct {
+		PuppetTest bool   `arg:"--test"`
+		Noop       bool   `arg:"--noop"`
+		Tags       string `arg:"--tags"`
+		SkipTags   string `arg:"--skip_tags"`
+	}
 
-	// ./bolt_exec op
-	opCmd := flag.NewFlagSet("op", flag.ExitOnError)
-	opName := opCmd.String("op", "--no-noop", "puppet agent --no-noop")
+	var args struct {
+		Agent *AgentCmd `arg:"subcommand:agent"`
+	}
 
-	// ./bolt_exec help
-	helpCmd := flag.NewFlagSet("help", flag.ExitOnError)
-	helpName := helpCmd.String("help", "", "-h")
-
-	// ./bolt_exec tags -add=<module> -start=--noop
-	tagsCmd := flag.NewFlagSet("tags", flag.ExitOnError)
-	tagsName := tagsCmd.String("tags", "--tags", "puppet agent --tags=")
-	tagsStart := tagsCmd.String("start", "--noop", "choose between op or noop")
-	tagsAdd := tagsCmd.String("add", "", "additional args like your module name")
-
-	// ./bolt_exec skip -add=<module> -start=--noop
-	skipTagsCmd := flag.NewFlagSet("skip_tags", flag.ExitOnError)
-	skipTagsName := skipTagsCmd.String("skip", "--skip_tags", "skipping tags")
-	skipTagsStart := skipTagsCmd.String("start", "--noop", "choose between op or noop")
-	skipTagsAdd := skipTagsCmd.String("add", "", "module name to skip")
-
-	// === Err checking, since we need at least 2 args ===
-	// may be deleted if not needed
-	if len(os.Args) < 2 {
-		fmt.Println(">> Usage:\n./puppet_bolt_exec noop \n" +
-			"./puppet_bolt_exec op\n" +
-			"./puppet_bolt_exec help\n" +
-			"./puppet_bolt_exec tags -add=<module> -start=--noop\n" +
-			"./puppet_bolt_exec skip -add=<module> -start=--noop")
+	if len(os.Args) < 3 {
+		fmt.Println("General usage:\n" +
+			"bolt_exec_puppet agent [--test] [--noop] [--tags TAGS] [--skip_tags SKIP_TAGS]\n\n" +
+			"Some examples:\n" +
+			"  ./bolt_exec_puppet agent --test\n" +
+			"  ./bolt_exec_puppet agent --test --noop\n\n" +
+			"  ./bolt_exec_puppet agent --test --noop --tags=<module>\n" +
+			"  ./bolt_exec_puppet agent --test --noop --tags <module>\n\n" +
+			"  ./bolt_exec_puppet agent --test --noop --skip_tags=<module>\n" +
+			"  ./bolt_exec_puppet agent --test --noop --skip_tags <module>\n\n" +
+			"A combination of both --tags and --skip_tags is also possible:\n" +
+			"  ./bolt_exec_puppet agent --test --noop --tags=<module> --skip_tags=<module>\n\n" +
+			"Every possibility can be run without --noop")
 		os.Exit(1)
 	}
 
-	// === Init var's for usage out of scope ===
-	var n string
-	var nn string
-	var nm string
-	var args []string
-	// === Parsing the flags ===
-	flag.Parse()
+	arg.MustParse(&args)
+
+	var argu []string
+	var pa string
+	var pt string
+	var putest string
+
+	//flag.Parse()
 
 	// === Switch on args / flags that are called on runtime ===
-	switch os.Args[1] {
-	case "noop":
-		pa := "agent"
-		t := "--test"
-		noopCmd.Parse(os.Args[2:])
-		n = *noopName
-		args = []string{pa, t, n}
-		// if tags (n) == empty remove n from args []string
-	case "op":
-		pa := "agent"
-		t := "--test"
-		opCmd.Parse(os.Args[2:])
-		n = *opName
-		args = []string{pa, t, n}
-	case "tags":
-		pa := "agent"
-		t := "--test"
-		tagsCmd.Parse(os.Args[2:])
-		n = *tagsName
-		nn = *tagsAdd
-		nm = *tagsStart
-		args = []string{pa, t, nm, n, nn}
-	case "skip":
-		pa := "agent"
-		t := "--test"
-		skipTagsCmd.Parse(os.Args[2:])
-		n = *skipTagsName
-		nn = *skipTagsAdd
-		nm = *skipTagsStart
-		args = []string{pa, t, nm, n, nn}
-	case "help":
-		helpCmd.Parse(os.Args[2:])
-		fmt.Println(">> Usage:\n./puppet_bolt_exec noop \n" +
-			"./puppet_bolt_exec op\n" +
-			"./puppet_bolt_exec help\n" +
-			"./puppet_bolt_exec tags -add=<module> -start=--noop\n" +
-			"./puppet_bolt_exec skip -add=<module> -start=--noop")
-		n = *helpName
-		os.Exit(1)
+	switch {
+	case args.Agent != nil:
+		pa = "agent"
+
+		if args.Agent.PuppetTest == true {
+			putest = "--test"
+		}
+
+		argu = []string{pa, putest}
+
+		if args.Agent.Noop == true {
+			pt = "--noop"
+			argu = []string{pa, putest, pt}
+		}
+
+		//if args.Agent.Tags == true {
+		//	ptags = "--tags"
+		//	argu = []string{pa, putest, pt, ptags, args.Agent.TagsAdd}
+		//}
+
+		if args.Agent.SkipTags != "" && args.Agent.Noop == true {
+			data := args.Agent.SkipTags
+			response := fmt.Sprintf("--skip_tags=%s", data)
+			argu = []string{pa, putest, pt, response}
+		} else if args.Agent.SkipTags != "" && args.Agent.Noop != true {
+			data := args.Agent.SkipTags
+			response := fmt.Sprintf("--skip_tags=%s", data)
+			argu = []string{pa, putest, response}
+		}
+
+		if args.Agent.Tags != "" && args.Agent.Noop == true {
+			data := args.Agent.Tags
+			response := fmt.Sprintf("--tags=%s", data)
+			argu = []string{pa, putest, pt, response}
+		} else if args.Agent.Tags != "" && args.Agent.Noop != true {
+			data := args.Agent.Tags
+			response := fmt.Sprintf("--tags=%s", data)
+			argu = []string{pa, putest, response}
+		}
+
+		if args.Agent.SkipTags != "" && args.Agent.Tags != "" && args.Agent.Noop == true {
+			dataTags := args.Agent.Tags
+			resTags := fmt.Sprintf("--tags=%s", dataTags)
+			dataSkip := args.Agent.SkipTags
+			resSkip := fmt.Sprintf("--skip_tags=%s", dataSkip)
+			argu = []string{pa, putest, pt, resTags, resSkip}
+		} else if args.Agent.SkipTags != "" && args.Agent.Tags != "" && args.Agent.Noop != true {
+			dataTags := args.Agent.Tags
+			resTags := fmt.Sprintf("--tags=%s", dataTags)
+			dataSkip := args.Agent.SkipTags
+			resSkip := fmt.Sprintf("--skip_tags=%s", dataSkip)
+			argu = []string{pa, putest, resTags, resSkip}
+		}
+
 	}
 
 	// == Command Executing ==
@@ -106,10 +111,10 @@ func main() {
 	// p := "/opt/puppetlabs/puppet/bin/puppet"
 	// Windows Pathes needs to be in \
 	pw := "C:/ProgramFiles/Puppet Labs/bin"
-	cmd := exec.Command(p, args...)
+	cmd := exec.Command(p, argu...)
 	if runtime.GOOS == "windows" {
 		fmt.Println("Running on Windows:")
-		cmd = exec.Command(pw, args...)
+		cmd = exec.Command(pw, argu...)
 	}
 
 	// Streaming Stderr and Stdout into a single Buffer
