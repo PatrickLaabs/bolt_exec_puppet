@@ -1,4 +1,4 @@
 # Dockerfile
 FROM alpine
-COPY puppet_bolt_exec /usr/bin/puppet_bolt_exec
-ENTRYPOINT ["/usr/bin/puppet_bolt_exec"]
+COPY bolt_exec_puppet /usr/bin/bolt_exec_puppet
+ENTRYPOINT ["/usr/bin/bolt_exec_puppet"]
