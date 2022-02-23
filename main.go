@@ -26,7 +26,7 @@ func main() {
 
 	if len(os.Args) < 3 {
 		fmt.Println("General usage:\n" +
-			"bolt_exec agent [--test] [--noop] [--tags TAGS] [--skip_tags SKIP_TAGS]\n\n" +
+			"bolt_exec_puppet agent [--test] [--noop] [--tags TAGS] [--skip_tags SKIP_TAGS]\n\n" +
 			"Some examples:\n" +
 			"  ./bolt_exec_puppet agent --test\n" +
 			"  ./bolt_exec_puppet agent --test --noop\n\n" +

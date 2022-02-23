@@ -30,7 +30,7 @@ The exit code is handled inside the go code with a switch statement.
 
 General usage:
 
-`bolt_exec agent [--test] [--noop] [--tags TAGS] [--skip_tags SKIP_TAGS]`
+`bolt_exec_puppet agent [--test] [--noop] [--tags TAGS] [--skip_tags SKIP_TAGS]`
 
 Some examples:
 
