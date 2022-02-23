@@ -25,11 +25,11 @@ func main() {
 	}
 
 	if len(os.Args) < 3 {
-		fmt.Println("Options:\n" +
+		fmt.Println("Version: v0.1.14\n\n" +
+			"Options:\n" +
 			"bolt_exec_puppet --help\n\n" +
 			"General usage:\n" +
 			"bolt_exec_puppet agent [--test] [--noop] [--tags TAGS] [--skip_tags SKIP_TAGS]\n\n" +
-			"INFO: It is currently NOT possible to call detail-exitcodes\n\n" +
 			"Exit Codes:\n" +
 			"  Puppet Exit Codes 0 & 2 are handled as Exit Code 0\n" +
 			"  Puppet Exit Codes 1, 4, 6 are handled as Exit Code 1\n\n" +
@@ -40,7 +40,6 @@ func main() {
 			"  bolt_exec_puppet agent --test --noop --tags <module>\n\n" +
 			"  bolt_exec_puppet agent --test --noop --skip_tags=<module>\n" +
 			"  bolt_exec_puppet agent --test --noop --skip_tags <module>\n\n" +
-			"A combination of both --tags and --skip_tags is also possible:\n" +
 			"  bolt_exec_puppet agent --test --noop --tags=<module> --skip_tags=<module>")
 		os.Exit(1)
 	}

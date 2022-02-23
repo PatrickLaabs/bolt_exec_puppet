@@ -15,7 +15,7 @@ The exit code is handled inside the go code with a switch statement.
 * [x] Project renaming to 'bolt_exec_puppet'
 * [x] Update README for usage instructions of this binary
 * [ ] Prepare Build-Pipeline on Jenkins
-* [ ] Running tests on linux systems
+* [x] Running tests on linux systems
 * [ ] Running tests on Windows systems
   * [ ] Check if 'if'-Statement works as intended on Windows
   * [ ] Check for Exit Code handling on Windows systems
@@ -35,9 +35,6 @@ bolt_exec_puppet agent --help
 ### General usage:
 
 `bolt_exec_puppet agent [--test] [--noop] [--tags TAGS] [--skip_tags SKIP_TAGS]`
-
-### INFO
-It is currently NOT possible to call detail-exitcodes
 
 ### Exit Codes:
 Puppet Exit Codes 0 & 2 are handled as Exit Code 0
