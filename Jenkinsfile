@@ -1,34 +1,31 @@
 pipeline {
+  ...
 
-    agent any
-    tools {
-        go 'go-1.17'
+  stages {
+    stage('Compile') {
+      steps {
+        sh 'go build'
+      }
     }
-    environment {
-        GO111MODULE = 'on'
-        CGO_ENABLED = 0
-        GOPATH = "${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"
+
+    stage('Test') {
+      steps {
+        sh 'go test ./...'
+      }
     }
-    stages {
 
-        stage('Build') {
+    stage ('Release') {
+      when {
+        buildingTag()
+      }
 
-            steps {
-                sh 'go build'
-            }
-        }
+      environment {
+        GITHUB_TOKEN = credentials('github-token')
+      }
 
-        stage('Release') {
-            when {
-                buildingTag()
-            }
-            environment {
-                GITHUB_TOKEN = credentials('github-token')
-            }
-            steps {
-                echo 'starting the release to goreleaser'
-                sh 'curl -sL https://git.io/goreleaser | bash'
-            }
-        }
+      steps {
+        sh 'curl -sL https://git.io/goreleaser | bash'
+      }
     }
+  }
 }
