@@ -18,9 +18,12 @@ pipeline {
     }
 
     stage ('Release') {
-      steps {
+    environment {
+        GITHUB_TOKEN = credentials('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')
+    }
+    steps {
         sh 'curl -sL https://git.io/goreleaser | bash'
-      }
+    }
     }
   }
 }
