@@ -6,7 +6,7 @@ pipeline {
         GOPATH = "${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"
     }
     tools {
-        go 'go-1.14'
+        go 'go-1.17.7'
     }
 
   stages {
