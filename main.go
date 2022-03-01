@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
-	"strings"
 	"syscall"
 )
 
@@ -25,7 +24,7 @@ func main() {
 	}
 
 	if len(os.Args) < 3 {
-		fmt.Println("Version: v0.1.15\n\n" +
+		fmt.Println("Version: v1.0.0\n\n" +
 			"Options:\n" +
 			"bolt_exec_puppet --help\n\n" +
 			"General usage:\n" +
@@ -126,38 +125,30 @@ func main() {
 	cmd.Stdout = &b
 	cmd.Stderr = &b
 
-	// Printing func printCommand
-	printCommand(cmd)
-
 	var waitStatus syscall.WaitStatus
 	// Starting the command saved inside cmd
 	if err := cmd.Run(); err != nil {
 		if exitError, ok := err.(*exec.ExitError); ok {
-			// fmt.Println("CombinedOut:\n", string(b.Bytes()))
-			fmt.Println("CombinedOut:\n", b.String())
+			// fmt.Println("CombinedOut:\n", b.String())
+			fmt.Println(b.String())
 			waitStatus = exitError.Sys().(syscall.WaitStatus)
-			printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
+			// printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 			exitHandle([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 		}
 	} else {
-		// fmt.Println("CombinedOut:\n", string(b.Bytes()))
-		fmt.Println("CombinedOut:\n", b.String())
+		// fmt.Println("CombinedOut:\n", b.String())
+		fmt.Println(b.String())
 		waitStatus = cmd.ProcessState.Sys().(syscall.WaitStatus)
-		printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
+		// printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 		exitHandle([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 	}
 }
 
-func printCommand(cmd *exec.Cmd) {
-	// Printing executed command. Just for knowing that the run has started.
-	fmt.Printf("==> Executing: %s\n", strings.Join(cmd.Args, " "))
-}
-
-func printOutput(outs []byte) {
-	if len(outs) > 0 {
-		fmt.Printf("==> Output: %s\n", string(outs))
-	}
-}
+//func printOutput(outs []byte) {
+//	if len(outs) > 0 {
+//		fmt.Printf("==> Output: %s\n", string(outs))
+//	}
+//}
 
 func exitHandle(outs []byte) {
 	// Handling the returned exit codes from exec.Command inside a switch statement
@@ -168,23 +159,16 @@ func exitHandle(outs []byte) {
 	}()
 
 	// Printing depends on case.
-	// Currently it prints the used case and the expected exit code along with it.
-	// This is only for debuging and tests - can be removed afterwards.
 	switch n := string(outs); n {
 	case "1":
-		fmt.Printf("==> switch case 1 - exit code 1: %s\n", string(outs))
 		code = 1
 	case "2":
-		fmt.Printf("==> switch case 2 - exit code 2: %s\n", string(outs))
 		code = 0
 	case "4":
-		fmt.Printf("==> switch case 4 - exit code 4: %s\n", string(outs))
 		code = 1
 	case "6":
-		fmt.Printf("==> switch case 6 - exit code 6: %s\n", string(outs))
 		code = 1
 	default:
-		fmt.Printf("==> switch case default - exit code 0: %s\n", string(outs))
 		code = 0
 	}
 }
