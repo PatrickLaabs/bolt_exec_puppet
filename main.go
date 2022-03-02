@@ -112,7 +112,7 @@ func main() {
 	// == Command Executing ==
 	p := "/usr/local/bin/puppet"
 	// p := "/opt/puppetlabs/puppet/bin/puppet"
-	// Windows Pathes needs to be in \
+	// pw := "C:\\Program Files\\Puppet Labs\\Puppet\\bin\\puppet"
 	pw := "puppet"
 	cmd := exec.Command(p, argu...)
 	if runtime.GOOS == "windows" {
