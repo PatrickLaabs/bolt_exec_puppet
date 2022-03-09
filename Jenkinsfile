@@ -1,7 +1,6 @@
 pipeline {
   agent any
     environment {
-        CGO_ENABLED = 0
         GOPATH = "${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"
         GOBIN = "${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}/bin"
         PATH = "${PATH}:${GOBIN}"
