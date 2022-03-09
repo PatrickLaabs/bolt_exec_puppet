@@ -1,0 +1,11 @@
+id: "bolt_exec_puppet"
+version: "1.0.2"
+title: "bolt_exec_puppet (Install)"
+authors: "patrick"
+owners: "patrick"
+requireLicenseAcceptance: "false"
+description: "bolt_exec_puppet go binary for using puppet via bolt"
+summary: "Installiert bolt_exec_puppet unter Windows"
+tags: "bolt_exec_puppet go golang"
+# Name of your zipped binary inside tools path
+zipPath : "bolt_exec_puppet.zip"
