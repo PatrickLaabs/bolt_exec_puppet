@@ -1,0 +1,23 @@
+# nfpm example config file
+#
+# check https://nfpm.goreleaser.com/configuration for detailed usage
+#
+name: "jenkins"
+arch: "amd64"
+platform: "linux"
+version: "v1.0.2"
+section: "default"
+priority: "extra"
+replaces:
+  - bolt_exec_puppet
+provides:
+  - bolt_exec_puppet
+maintainer: "Patrick Laabs <plaabs@eitco.de>"
+description: |
+  bolt_exec_puppet makes use of the puppet binary.
+vendor: "Eitco"
+homepage: "https://github.com/PatrickLaabs/bolt_exec_puppet"
+license: "MIT"
+contents:
+  - src: /var/jenkins_home/bolt_exec_puppet/bolt_exec_puppet
+    dst: /usr/local/bin/bolt_exec_puppet
