@@ -58,7 +58,7 @@ pipeline {
         steps {
             sh 'go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest'
             sh 'cp $JENKINS_HOME/workspace/$JOB_NAME/nfpm.yaml $JENKINS_HOME/$WORKDIR'
-            sh 'cp $JENKINS_HOME/workspace/$JOB_NAME/jenkins $JENKINS_HOME/$WORKDIR'
+            sh 'cp $JENKINS_HOME/workspace/$JOB_NAME/bolt_exec_puppet $JENKINS_HOME/$WORKDIR'
             sh 'cd $JENKINS_HOME/$WORKDIR && $JENKINS_HOME/jobs/$JOB_NAME/builds/$BUILD_ID/bin/nfpm pkg --packager rpm --target $PWD'
         }
     }
