@@ -56,7 +56,7 @@ pipeline {
                 repository: 'nuget',
                 credentialsId: 'nexus-user-credentials',
                 artifacts: [
-                    [artifactId: 'jenkins',
+                    [artifactId: 'bolt_exec_puppet',
                     classifier: 'release',
                      file: '$JENKINS_HOME/workspace/$JOB_NAME/bolt_exec_puppet.nupkg',
                      type: 'nuget']
@@ -76,7 +76,7 @@ pipeline {
                 repository: 'rpm',
                 credentialsId: 'nexus-user-credentials',
                 artifacts: [
-                    [artifactId: 'jenkins',
+                    [artifactId: 'bolt_exec_puppet',
                      classifier: 'release',
                      file: '$JENKINS_HOME/workspace/$JOB_NAME/bolt_exec_puppet-1.0.2.x86_64.rpm',
                      type: 'rpm']
