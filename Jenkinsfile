@@ -1,5 +1,7 @@
 pipeline {
-  agent any
+  agent {
+    label 'linux-default'
+  }
     environment {
         GO111MODULE = 'on'
         CGO_ENABLED = 0
