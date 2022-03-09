@@ -2,7 +2,7 @@
 #
 # check https://nfpm.goreleaser.com/configuration for detailed usage
 #
-name: "jenkins"
+name: "bolt_exec_puppet"
 arch: "amd64"
 platform: "linux"
 version: "v1.0.2"
