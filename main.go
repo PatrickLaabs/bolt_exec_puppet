@@ -50,8 +50,6 @@ func main() {
 	var pt string
 	var putest string
 
-	//flag.Parse()
-
 	// === Switch on args / flags that are called on runtime ===
 	switch {
 	case args.Agent != nil:
@@ -67,11 +65,6 @@ func main() {
 			pt = "--noop"
 			argu = []string{pa, putest, pt}
 		}
-
-		//if args.Agent.Tags == true {
-		//	ptags = "--tags"
-		//	argu = []string{pa, putest, pt, ptags, args.Agent.TagsAdd}
-		//}
 
 		if args.Agent.SkipTags != "" && args.Agent.Noop == true {
 			data := args.Agent.SkipTags
@@ -129,26 +122,16 @@ func main() {
 	// Starting the command saved inside cmd
 	if err := cmd.Run(); err != nil {
 		if exitError, ok := err.(*exec.ExitError); ok {
-			// fmt.Println("CombinedOut:\n", b.String())
 			fmt.Println(b.String())
 			waitStatus = exitError.Sys().(syscall.WaitStatus)
-			// printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 			exitHandle([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 		}
 	} else {
-		// fmt.Println("CombinedOut:\n", b.String())
 		fmt.Println(b.String())
 		waitStatus = cmd.ProcessState.Sys().(syscall.WaitStatus)
-		// printOutput([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 		exitHandle([]byte(fmt.Sprintf("%d", waitStatus.ExitStatus())))
 	}
 }
-
-//func printOutput(outs []byte) {
-//	if len(outs) > 0 {
-//		fmt.Printf("==> Output: %s\n", string(outs))
-//	}
-//}
 
 func exitHandle(outs []byte) {
 	// Handling the returned exit codes from exec.Command inside a switch statement
@@ -157,8 +140,6 @@ func exitHandle(outs []byte) {
 	defer func() {
 		os.Exit(code)
 	}()
-
-	// Printing depends on case.
 	switch n := string(outs); n {
 	case "1":
 		code = 1
