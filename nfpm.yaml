@@ -19,5 +19,5 @@ vendor: "Eitco"
 homepage: "https://github.com/PatrickLaabs/bolt_exec_puppet"
 license: "MIT"
 contents:
-  - src: /var/jenkins_home/bolt_exec_puppet/bolt_exec_puppet
+  - src: /var/jenkins_home/workspace/bolt_exec_puppet/bolt_exec_puppet
     dst: /usr/local/bin/bolt_exec_puppet
