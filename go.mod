@@ -1,4 +1,4 @@
-module github.com/PatrickLaabs/bolt_exec
+module github.com/PatrickLaabs/bolt_exec_puppet
 
 go 1.16
 
